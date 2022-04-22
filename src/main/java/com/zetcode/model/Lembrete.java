@@ -24,8 +24,14 @@ public class Lembrete {
     @Column(name="descricao")
     private String descricao;
     
+    @Column(name="telefone")
+    private String telefone;
+    
     @Column(name="horario")
     private LocalTime horario;
+    
+    @Column(name="tipo_lembrete")
+    private String tipo_lembrete;
     
     @Column(name="data")
     private LocalDate data;
@@ -74,6 +80,22 @@ public class Lembrete {
         this.descricao = descricao;
     }
 
+    public String getTipo_lembrete() {
+        return tipo_lembrete;
+    }
+
+    public void setTipo_lembrete(String tipo_lembrete) {
+        this.tipo_lembrete = tipo_lembrete;
+    }
+    
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+    
     public LocalTime getHorario() {
         return horario;
     }
