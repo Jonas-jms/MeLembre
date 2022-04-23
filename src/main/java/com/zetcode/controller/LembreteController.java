@@ -33,22 +33,15 @@ public class LembreteController
                             JOptionPane.showMessageDialog(null, "Favor informar um número válido, se atente a quantidade de digitos");
                             else
                             {
-                                if(parametros.getMensal()!=0)
-                                {
-                                    if(parametros.getMensal()<0 || parametros.getMensal()>31)
-                                    JOptionPane.showMessageDialog(null, "Favor informar um dia do mês válido!");
-                                }
-                                else
-                                {
-                                    parametros.setTelefone("+55"+parametros.getTelefone());
-                                    model = new LembreteService().inserir(parametros);
-                                }
+                               parametros.setTelefone("+55"+parametros.getTelefone());
+                               model = new LembreteService().inserir(parametros);
                             }
                         }
                     }
                 }
             }
         }
+        
         catch (Exception e)
         { JOptionPane.showMessageDialog(null, e); }
 
@@ -58,5 +51,10 @@ public class LembreteController
     public List<Lembrete> findAll()
     {
         return new LembreteService().findAll();
-    }    
+    } 
+    
+    public void deleteLembrete(Lembrete lembrete)
+    {
+        new LembreteService().deleteLembrete(lembrete);
+    }
 }

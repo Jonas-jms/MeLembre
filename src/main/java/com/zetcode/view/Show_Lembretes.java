@@ -69,7 +69,7 @@ public class Show_Lembretes extends javax.swing.JFrame
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
-                        .addGap(0, 157, Short.MAX_VALUE)))
+                        .addGap(0, 347, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -80,7 +80,7 @@ public class Show_Lembretes extends javax.swing.JFrame
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -110,6 +110,7 @@ public class Show_Lembretes extends javax.swing.JFrame
         tbl_lembretes.setModel(modeloTabela);
         
         modeloTabela.addColumn("Lembrete Nº");
+        modeloTabela.addColumn("Status Lembrete");
         modeloTabela.addColumn("Título");
         modeloTabela.addColumn("Descrição");
         modeloTabela.addColumn("Horário");
@@ -123,6 +124,7 @@ public class Show_Lembretes extends javax.swing.JFrame
                new Object[]
                {
                    lembrete.getId(),
+                   lembrete.getAtivo(),
                    lembrete.getTitulo(),
                    lembrete.getDescricao(),
                    lembrete.getHorario(),

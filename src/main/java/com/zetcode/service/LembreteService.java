@@ -22,4 +22,10 @@ public class LembreteService
         BeanProvider.autowire(this);
         return lembreteRepository.findAll();
     }
+
+    public void deleteLembrete(Lembrete lembrete)
+    {
+       BeanProvider.autowire(this);
+       lembreteRepository.deleteById(lembrete.getId());
+    }
 }

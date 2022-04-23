@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application extends javax.swing.JFrame
 {   
+    String dias = "";
+    
     public Application()
     { 
         initComponents();
@@ -352,7 +354,27 @@ public class Application extends javax.swing.JFrame
     }//GEN-LAST:event_txt_whatsappActionPerformed
 
     private void bt_save_lembreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_save_lembreteActionPerformed
-       
+        
+        boolean valido=true;
+        
+        if(box_tipo_lembrete.getSelectedIndex()==3)
+        {
+            if(txt_dia_mes.getText().equals(""))
+            {
+                JOptionPane.showMessageDialog(null, "Favor informar um dia do mês!");
+                valido=false;
+            }
+            else
+            {
+                int mes = Integer.parseInt(txt_dia_mes.getText());
+                if(mes<1 || mes>31)
+                {
+                    JOptionPane.showMessageDialog(null, "Favor informar um dia válido!");
+                    valido=false;
+                }
+            }
+        }
+        if(valido)       
         criar_lembrete();    }//GEN-LAST:event_bt_save_lembreteActionPerformed
 
     private void bt_showLembretesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_showLembretesActionPerformed
@@ -370,6 +392,8 @@ public class Application extends javax.swing.JFrame
     
     private void criar_lembrete()
     {
+       boolean personalizado_valido = true;
+       
        Lembrete novo_lembrete = new Lembrete();
 
        novo_lembrete.setTelefone(txt_whatsapp.getText());
@@ -389,10 +413,8 @@ public class Application extends javax.swing.JFrame
        novo_lembrete.setSemanal(box_dia_semanal.getSelectedIndex()+1);
        else if(box_tipo_lembrete.getSelectedIndex()==3)
        novo_lembrete.setMensal(Integer.parseInt(txt_dia_mes.getText()));
-       else
-       {
-           String dias = "";
-           
+       else if(box_tipo_lembrete.getSelectedIndex()==4)
+       {           
            if(check_seg.isSelected())
            dias+="1,";
            if(check_ter.isSelected())
@@ -408,22 +430,32 @@ public class Application extends javax.swing.JFrame
            if(check_sab.isSelected())
            dias+="7,";
            
+           if(dias.equals(""))
+           personalizado_valido=false;
+           
            novo_lembrete.setSemana_personalizado(dias);
        }
        
-       if(new LembreteController().inserir(novo_lembrete)!=null)
+       if(personalizado_valido)
        {
-           JOptionPane.showMessageDialog(null, "Lembrete cadastrado com sucesso!");
-           limpar_campos();
-           show_semanal_personalizado(false);
-           show_lembrete_recorrente(false);
-           bt_save_lembrete.setVisible(false);
-           picker_data.setVisible(false);
-           picker_data.setDate(null);
-           picker_horario.setTime(null);
+            novo_lembrete.setAtivo("Ativo");
+            if(new LembreteController().inserir(novo_lembrete)!=null)
+            {
+                JOptionPane.showMessageDialog(null, "Lembrete cadastrado com sucesso!");
+                limpar_campos();
+                show_semanal_personalizado(false);
+                show_lembrete_recorrente(false);
+                bt_save_lembrete.setVisible(false);
+                picker_data.setVisible(false);
+                picker_data.setDate(null);
+                picker_horario.setTime(null);
+            }
+            else
+            JOptionPane.showMessageDialog(null, "Houve um erro ao cadastrar o lembrete!");
        }
        else
-       JOptionPane.showMessageDialog(null, "Houve um erro ao cadastrar o lembrete!");
+       JOptionPane.showMessageDialog(null, "Favor marcar os dias da semana para o Lembrete personalizado");
+       
     }
     
     private void show_semanal_personalizado(boolean hide)

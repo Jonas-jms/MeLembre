@@ -5,26 +5,23 @@ import javax.swing.JOptionPane;
 
 public class Visualizar_Lembrete extends javax.swing.JFrame
 {      
+    Lembrete lembrete;
+    String dias = "";
+    
     public Visualizar_Lembrete(Lembrete lembrete)
     { 
         initComponents();
+        
+        this.lembrete=lembrete;
+        
+        if(lembrete.getAtivo().equals("Ativo"))
+        bt_pausar_lembrete.setText("Pausar lembrete");
+        else
+        bt_pausar_lembrete.setText("Reativar lembrete");
+        
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
-        
-        show_lembrete_unico(false);
-        show_lembrete_recorrente(false);
-        bt_save_lembrete.setVisible(false);
-        bt_deletar_lembrete.setVisible(false);
-        box_dia_semanal.setVisible(false);
-        show_semanal_personalizado(false);
-        lbl_informe_dia.setVisible(false);
-        txt_dia_mes.setVisible(false);
-        lbl_whatsapp.setVisible(false);
-        txt_whatsapp.setVisible(false);
-        lbl_quando_lembrar.setVisible(false);
-        lbl_informe_dia.setVisible(false);
-        txt_dia_mes.setVisible(false);
-        
-        recupera_lembrete(lembrete);
+                         
+        recupera_lembrete();
     }
     
     @SuppressWarnings("unchecked")
@@ -59,6 +56,7 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
         lbl_whatsapp = new javax.swing.JLabel();
         txt_whatsapp = new javax.swing.JTextField();
         bt_save_lembrete = new javax.swing.JButton();
+        bt_pausar_lembrete = new javax.swing.JButton();
         bt_deletar_lembrete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -160,8 +158,21 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
             }
         });
 
-        bt_deletar_lembrete.setText("Deletar lembrete");
+        bt_pausar_lembrete.setText("Reativar lembrete");
+        bt_pausar_lembrete.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        bt_pausar_lembrete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_pausar_lembreteActionPerformed(evt);
+            }
+        });
+
         bt_deletar_lembrete.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        bt_deletar_lembrete.setText("Deletar lembrete");
+        bt_deletar_lembrete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_deletar_lembreteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -212,12 +223,14 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
                     .addComponent(lbl_whatsapp)
                     .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(bt_deletar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(93, Short.MAX_VALUE))
+                        .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_pausar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bt_deletar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(140, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bt_lembreteUnico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -276,25 +289,35 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(bt_save_lembrete, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                    .addComponent(bt_deletar_lembrete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bt_pausar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bt_deletar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void bt_lembreteUnicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_lembreteUnicoActionPerformed
-        bt_save_lembrete.setVisible(true);
+        box_tipo_lembrete.setSelectedIndex(0);
         show_lembrete_recorrente(false);
         show_lembrete_unico(true);
         lbl_dataHorario.setText("Horário/Data");
+        lbl_tipoLembrete.setVisible(false);
+        box_tipo_lembrete.setVisible(false);
+        lbl_whatsapp.setVisible(false);
+        txt_whatsapp.setVisible(false);
+        lbl_quando_lembrar.setVisible(false);
+        box_dia_semanal.setVisible(false);
+        show_semanal_personalizado(false);
+        lbl_informe_dia.setVisible(false);
+        txt_dia_mes.setVisible(false);
     }//GEN-LAST:event_bt_lembreteUnicoActionPerformed
 
     private void bt_lembreteRecorrenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_lembreteRecorrenteActionPerformed
-        bt_save_lembrete.setVisible(true);
         show_lembrete_unico(false);
         show_lembrete_recorrente(true);
+        box_tipo_lembrete.setSelectedIndex(0);
         lbl_dataHorario.setText("Horário");
     }//GEN-LAST:event_bt_lembreteRecorrenteActionPerformed
 
@@ -305,7 +328,112 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
     }//GEN-LAST:event_txt_dia_mesActionPerformed
 
     private void box_tipo_lembreteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_box_tipo_lembreteItemStateChanged
+        muda_tipo_lembrete();
+    }//GEN-LAST:event_box_tipo_lembreteItemStateChanged
+
+    private void txt_whatsappActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_whatsappActionPerformed
+    }//GEN-LAST:event_txt_whatsappActionPerformed
+
+    private void bt_save_lembreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_save_lembreteActionPerformed
         
+        boolean valido=true;
+        
+        if(box_tipo_lembrete.getSelectedIndex()==3)
+        {
+            if(txt_dia_mes.getText().equals(""))
+            {
+                JOptionPane.showMessageDialog(null, "Favor informar um dia do mês!");
+                valido=false;
+            }
+            else
+            {
+                int mes = Integer.parseInt(txt_dia_mes.getText());
+                if(mes<1 || mes>31)
+                {
+                    JOptionPane.showMessageDialog(null, "Favor informar um dia válido!");
+                    valido=false;
+                }
+            }
+        }
+        if(valido)
+        criar_lembrete();    }//GEN-LAST:event_bt_save_lembreteActionPerformed
+
+    private void bt_pausar_lembreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_pausar_lembreteActionPerformed
+        status_ativo_lembrete();
+    }//GEN-LAST:event_bt_pausar_lembreteActionPerformed
+
+    private void bt_deletar_lembreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_deletar_lembreteActionPerformed
+        deletar_lembrete();
+    }//GEN-LAST:event_bt_deletar_lembreteActionPerformed
+
+    public static void main(String args[])
+    {     
+        java.awt.EventQueue.invokeLater(() -> {
+            new Visualizar_Lembrete(null).setVisible(true);
+        });
+    }
+    
+    private void recupera_lembrete()
+    {
+       txt_titulo.setText(lembrete.getTitulo());
+       txt_descricao.setText(lembrete.getDescricao());
+       picker_horario.setTime(lembrete.getHorario());
+       txt_whatsapp.setText(lembrete.getTelefone());
+       
+       if(lembrete.getTipo_lembrete().equals("Único"))
+       {
+           show_lembrete_unico(true);
+           picker_data.setDate(lembrete.getData());
+           lbl_tipoLembrete.setVisible(false);
+           box_tipo_lembrete.setVisible(false);
+           lbl_quando_lembrar.setVisible(false);
+           box_dia_semanal.setVisible(false);
+           show_semanal_personalizado(false);
+           lbl_informe_dia.setVisible(false);
+           txt_dia_mes.setVisible(false);
+       }
+       else
+       {
+           show_lembrete_recorrente(true);
+           picker_data.setVisible(false);
+           if(lembrete.getTipo_lembrete().equals("Todo dia"))
+           box_tipo_lembrete.setSelectedIndex(1);
+           else if(lembrete.getTipo_lembrete().equals("Semanal"))
+           {
+               box_dia_semanal.setSelectedIndex(lembrete.getSemanal()-1);
+               box_tipo_lembrete.setSelectedIndex(2); 
+           }
+           else if(lembrete.getTipo_lembrete().equals("Mensal"))
+           {
+               txt_dia_mes.setText(String.valueOf(lembrete.getMensal()));
+               box_tipo_lembrete.setSelectedIndex(3);
+           }
+           else
+           {
+               if(lembrete.getSemana_personalizado().contains("1"))
+               check_seg.setSelected(true);
+               if(lembrete.getSemana_personalizado().contains("2"))
+               check_ter.setSelected(true);
+               if(lembrete.getSemana_personalizado().contains("3"))
+               check_qua.setSelected(true);
+               if(lembrete.getSemana_personalizado().contains("4"))
+               check_qui.setSelected(true);
+               if(lembrete.getSemana_personalizado().contains("5"))
+               check_sex.setSelected(true);
+               if(lembrete.getSemana_personalizado().contains("6"))
+               check_sab.setSelected(true);
+               if(lembrete.getSemana_personalizado().contains("7"))
+               check_dom.setSelected(true);
+               
+               box_tipo_lembrete.setSelectedIndex(4);
+           }
+           
+           muda_tipo_lembrete();
+       }      
+    }
+    
+    private void muda_tipo_lembrete()
+    {
         switch (box_tipo_lembrete.getSelectedIndex())
         {
             case 1:
@@ -339,83 +467,100 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
                     lbl_quando_lembrar.setVisible(true);
                     break;
         }
-    }//GEN-LAST:event_box_tipo_lembreteItemStateChanged
-
-    private void txt_whatsappActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_whatsappActionPerformed
-    }//GEN-LAST:event_txt_whatsappActionPerformed
-
-    private void bt_save_lembreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_save_lembreteActionPerformed
-       
-        criar_lembrete();    }//GEN-LAST:event_bt_save_lembreteActionPerformed
-
-    public static void main(String args[])
-    {     
-        java.awt.EventQueue.invokeLater(() -> {
-            new Visualizar_Lembrete(null).setVisible(true);
-        });
-    }
-    
-    private void recupera_lembrete(Lembrete lembrete)
-    {
-       
     }
     
     private void criar_lembrete()
     {
-       Lembrete novo_lembrete = new Lembrete();
-
-       novo_lembrete.setTelefone(txt_whatsapp.getText());
-       novo_lembrete.setTitulo(txt_titulo.getText());
-       novo_lembrete.setDescricao(txt_descricao.getText());
-       novo_lembrete.setHorario(picker_horario.getTime());
-       novo_lembrete.setData(picker_data.getDate());  
+       boolean personalizado_valido = true;
+        
+       Lembrete lembrete_alterado = new Lembrete(); 
        
+       lembrete_alterado.setId(lembrete.getId());
+       lembrete_alterado.setTelefone(txt_whatsapp.getText().replace("+55",""));
+       lembrete_alterado.setTitulo(txt_titulo.getText());
+       lembrete_alterado.setDescricao(txt_descricao.getText());
+       lembrete_alterado.setHorario(picker_horario.getTime());
+              
        if(box_tipo_lembrete.getSelectedIndex()==0)
-       novo_lembrete.setTipo_lembrete("Único");
-       else
-       novo_lembrete.setTipo_lembrete(box_tipo_lembrete.getSelectedItem().toString());
-       
-       if(box_tipo_lembrete.getSelectedIndex()==1)
-       novo_lembrete.setDiario(true);
-       else if(box_tipo_lembrete.getSelectedIndex()==2)
-       novo_lembrete.setSemanal(box_dia_semanal.getSelectedIndex()+1);
-       else if(box_tipo_lembrete.getSelectedIndex()==3)
-       novo_lembrete.setMensal(Integer.parseInt(txt_dia_mes.getText()));
-       else
        {
-           String dias = "";
-           
-           if(check_seg.isSelected())
-           dias+="1,";
-           if(check_ter.isSelected())
-           dias+="2,";
-           if(check_qua.isSelected())
-           dias+="3,";
-           if(check_qui.isSelected())
-           dias+="4,";
-           if(check_sex.isSelected())
-           dias+="5,";
-           if(check_sab.isSelected())
-           dias+="6,";
-           if(check_sab.isSelected())
-           dias+="7,";
-           
-           novo_lembrete.setSemana_personalizado(dias);
-       }
-       
-       if(new LembreteController().inserir(novo_lembrete)!=null)
-       {
-           JOptionPane.showMessageDialog(null, "Lembrete cadastrado com sucesso!");
-           limpar_campos();
-           show_semanal_personalizado(false);
-           show_lembrete_recorrente(false);
-           bt_save_lembrete.setVisible(false);
-           picker_data.setVisible(false);
-           picker_data.setDate(null);
-           picker_horario.setTime(null);
+           lembrete_alterado.setTipo_lembrete("Único");
+           lembrete_alterado.setData(picker_data.getDate());  
        }
        else
-       JOptionPane.showMessageDialog(null, "Houve um erro ao cadastrar o lembrete!");
+       {
+           lembrete_alterado.setTipo_lembrete(box_tipo_lembrete.getSelectedItem().toString());
+       
+           if(box_tipo_lembrete.getSelectedIndex()==1)
+           lembrete_alterado.setDiario(true);
+           else if(box_tipo_lembrete.getSelectedIndex()==2)
+           lembrete_alterado.setSemanal(box_dia_semanal.getSelectedIndex()+1);
+           else if(box_tipo_lembrete.getSelectedIndex()==3)
+           lembrete_alterado.setMensal(Integer.parseInt(txt_dia_mes.getText()));
+           else if(box_tipo_lembrete.getSelectedIndex()==4)
+           {
+               if(check_seg.isSelected())
+               dias+="1,";
+               if(check_ter.isSelected())
+               dias+="2,";
+               if(check_qua.isSelected())
+               dias+="3,";
+               if(check_qui.isSelected())
+               dias+="4,";
+               if(check_sex.isSelected())
+               dias+="5,";
+               if(check_sab.isSelected())
+               dias+="6,";
+               if(check_sab.isSelected())
+               dias+="7,";
+
+               if(dias.equals(""))
+               personalizado_valido=false;
+               
+               lembrete_alterado.setSemana_personalizado(dias);
+            }
+       }
+       
+       if(personalizado_valido)
+       {
+            lembrete_alterado.setAtivo("Ativo");
+            if(new LembreteController().inserir(lembrete_alterado)!=null)
+            {
+                JOptionPane.showMessageDialog(null, "Lembrete alterado com sucesso!");
+                this.dispose();
+            }
+            else
+            JOptionPane.showMessageDialog(null, "Houve um erro ao cadastrar o lembrete!");
+       }
+       else
+       JOptionPane.showMessageDialog(null, "Favor marcar os dias da semana para o Lembrete personalizado");
+       
+
+    }
+    
+    private void deletar_lembrete()
+    {
+        new LembreteController().deleteLembrete(lembrete);
+        JOptionPane.showMessageDialog(null, "Lembrete excluido com sucesso");
+        this.dispose();
+    }
+    
+    private void status_ativo_lembrete()
+    {
+        lembrete.setTelefone(txt_whatsapp.getText().replace("+55",""));
+        if(lembrete.getAtivo().equals("Ativo"))
+        {
+            lembrete.setAtivo("Pausado");
+            new LembreteController().inserir(lembrete);
+            JOptionPane.showMessageDialog(null, "Lembrete pausado");
+            bt_pausar_lembrete.setText("Reativar lembrete");
+        }
+        else
+        {
+            lembrete.setAtivo("Ativo");
+            new LembreteController().inserir(lembrete);
+            JOptionPane.showMessageDialog(null, "Lembrete reativado");
+            bt_pausar_lembrete.setText("Pausar lembrete");
+        }
     }
     
     private void show_semanal_personalizado(boolean hide)
@@ -454,24 +599,6 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
         box_tipo_lembrete.setVisible(hide);
         lbl_whatsapp.setVisible(hide);
         txt_whatsapp.setVisible(hide);
-       
-     }
-    
-     private void limpar_campos()
-     {
-         txt_titulo.setText("");
-         txt_descricao.setText("");
-         txt_whatsapp.setText("");
-         txt_dia_mes.setText("");
-         box_tipo_lembrete.setSelectedIndex(0);
-         box_dia_semanal.setSelectedIndex(0);
-         check_seg.setSelected(false);
-         check_ter.setSelected(false);
-         check_qua.setSelected(false);
-         check_qui.setSelected(false);
-         check_sex.setSelected(false);
-         check_sab.setSelected(false);
-         check_dom.setSelected(false);
      }
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -480,6 +607,7 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
     private javax.swing.JButton bt_deletar_lembrete;
     private javax.swing.JButton bt_lembreteRecorrente;
     private javax.swing.JButton bt_lembreteUnico;
+    private javax.swing.JButton bt_pausar_lembrete;
     private javax.swing.JButton bt_save_lembrete;
     private com.github.lgooddatepicker.components.CalendarPanel calendarPanel1;
     private javax.swing.JCheckBox check_dom;

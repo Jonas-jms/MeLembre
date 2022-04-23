@@ -48,12 +48,10 @@ public class Lembrete {
     @Column(name="semana_personalizado")
     private String semana_personalizado;
 
+    @Column(name="ativo")
+    private String ativo;
+    
     public Lembrete() {
-    }
-
-    public Lembrete(String titulo, String descricao) {
-        this.titulo = titulo;
-        this.descricao = descricao;
     }
 
     public Long getId() {
@@ -142,5 +140,13 @@ public class Lembrete {
 
     public void setDiario(boolean diario) {
         this.diario = diario;
+    }
+
+    public String getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(String ativo) {
+        this.ativo = ativo;
     }
 }
