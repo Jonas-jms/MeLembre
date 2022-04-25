@@ -523,18 +523,20 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
        if(personalizado_valido)
        {
             lembrete_alterado.setAtivo("Ativo");
-            if(new LembreteController().inserir(lembrete_alterado)!=null)
+            
+            LembreteController controller = new LembreteController();
+            
+            if(controller.inserir(lembrete_alterado)!=null)
             {
                 JOptionPane.showMessageDialog(null, "Lembrete alterado com sucesso!");
+                controller.agenda_novo(lembrete_alterado);
                 this.dispose();
             }
             else
-            JOptionPane.showMessageDialog(null, "Houve um erro ao cadastrar o lembrete!");
+            JOptionPane.showMessageDialog(null, "Houve um erro ao alterar o lembrete!");
        }
        else
        JOptionPane.showMessageDialog(null, "Favor marcar os dias da semana para o Lembrete personalizado");
-       
-
     }
     
     private void deletar_lembrete()

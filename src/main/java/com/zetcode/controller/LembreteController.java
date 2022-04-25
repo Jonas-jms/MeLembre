@@ -57,4 +57,14 @@ public class LembreteController
     {
         new LembreteService().deleteLembrete(lembrete);
     }
+    
+    public void getProgramacaoAtiva()
+    {
+        new LembreteService().getProgramacaoAtiva();
+    }
+    
+    public void agenda_novo(Lembrete lembrete)
+    {
+        new LembreteService().agenda_novo(lembrete);
+    }
 }

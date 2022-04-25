@@ -54,6 +54,10 @@ public class Lembrete {
     public Lembrete() {
     }
 
+    public Lembrete(LocalTime horario) {
+        this.horario = horario;
+    }
+    
     public Long getId() {
         return id;
     }
