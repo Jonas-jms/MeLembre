@@ -10,10 +10,16 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Path;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application extends javax.swing.JFrame
@@ -38,6 +44,25 @@ public class Application extends javax.swing.JFrame
         ativa_minimizar_aplicacao();
     }
         
+    @Bean
+    public WebDriver webDriver()
+    {
+        ChromeOptions options = new ChromeOptions();
+        
+        File f = new File("C:\\MeLembreCache");
+        if (f.isDirectory())
+        options.setHeadless(true);
+        else
+        options.setHeadless(false);
+        
+        options.addArguments("user-data-dir=C:\\MeLembreCache");
+        options.addArguments("user-agent=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36");
+        var webDriver = new ChromeDriver(options);
+        webDriver.get("https://web.whatsapp.com/");
+        webDriver.manage().window().maximize();
+        return webDriver;
+    }
+    
     private void criar_lembrete()
     {
        boolean personalizado_valido = true;

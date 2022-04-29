@@ -17,13 +17,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.Keys;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.WebElement;
 
 public class LembreteService
 {
     @Autowired
     private LembreteRepository lembreteRepository;
     
-    
+    @Autowired
+    private WebDriver webDriver;
 
     public Lembrete inserir(Lembrete parametros)
     {
@@ -122,26 +124,30 @@ public class LembreteService
        timer.schedule(lembrete_call, date);
     }
     
-    private void selenium_call_whatsapp(Lembrete lembrete)
+    private void selenium_sendMsg_whatsapp()
     {
-        WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
+        List <WebElement> elemento = webDriver.findElements(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]"));
         
-       /* driver.get("https://web.selenium_call_whatsapp.com");
-        
-        while(driver.findElement(By.id("side"))==null)
+        while(elemento.size()<1)
         {
             try
-            { Thread.sleep(1); }
+            { 
+              Thread.sleep(1);
+              elemento = webDriver.findElements(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]"));
+            }
             catch(InterruptedException ex)
             {
-                
+                selenium_sendMsg_whatsapp();
             }
-        }    */
-                
-        driver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text="+lembrete.getDescricao());
+        }
+        elemento.get(0).sendKeys(Keys.ENTER);        
+    }
+    
+    private void selenium_call_whatsapp(Lembrete lembrete)
+    {        
+        webDriver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text="+lembrete.getDescricao());
 
-        while(driver.findElements(By.id("side")).size()<1 && driver.findElements(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]")).size()<1)
+        while(webDriver.findElements(By.id("side")).size()<1)
         {
             try
             { Thread.sleep(1); }
@@ -151,7 +157,9 @@ public class LembreteService
             }
         }
         
-        driver.findElement(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]")).sendKeys(Keys.ENTER);        
+        selenium_sendMsg_whatsapp();
+        
+        //webDriver.findElement(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]")).sendKeys(Keys.ENTER);        
         
         try
         { Thread.sleep(10); }
