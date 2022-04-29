@@ -230,7 +230,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lbl_descricao">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Descri&#xe7;&#xe3;o:"/>
+        <Property name="text" type="java.lang.String" value="Mensagem:"/>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Helvetica" size="22" style="0"/>
         </Property>

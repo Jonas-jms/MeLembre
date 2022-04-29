@@ -93,7 +93,7 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
             }
         });
 
-        lbl_descricao.setText("Descrição:");
+        lbl_descricao.setText("Mensagem:");
         lbl_descricao.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
 
         txt_descricao.setColumns(20);

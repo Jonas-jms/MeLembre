@@ -25,23 +25,26 @@ public class LembreteController
                     JOptionPane.showMessageDialog(null, "O campo Horário do lembrete deve ser selecionado");
                     else
                     {
-                        if(!parametros.getTelefone().contains("71"))
-                        JOptionPane.showMessageDialog(null, "Favor informar o DDD do número");
-                        else
-                        {
+                            if(parametros.getTelefone().contains(" "))
+                            parametros.getTelefone().replace(" ", "");
+                            if(parametros.getTelefone().contains("-"))
+                            parametros.getTelefone().replace("-", "");
+                            if(parametros.getTelefone().contains("("))
+                            parametros.getTelefone().replace("(", "");
+                            if(parametros.getTelefone().contains(")"))
+                            parametros.getTelefone().replace(")", "");
+
                             if(parametros.getTelefone().length()!=10 && parametros.getTelefone().length()!=11)
-                            JOptionPane.showMessageDialog(null, "Favor informar um número válido, se atente a quantidade de digitos");
+                            JOptionPane.showMessageDialog(null, "Favor informar um número válido (verificar se DDD foi incluso)");
                             else
                             {
                                parametros.setTelefone("+55"+parametros.getTelefone());
                                model = new LembreteService().inserir(parametros);
                             }
-                        }
                     }
                 }
             }
-        }
-        
+        }  
         catch (Exception e)
         { JOptionPane.showMessageDialog(null, e); }
 

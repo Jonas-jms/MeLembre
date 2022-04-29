@@ -12,16 +12,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.JOptionPane;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.Keys;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class LembreteService
 {
     @Autowired
     private LembreteRepository lembreteRepository;
     
-    /*@Autowired
-    private ImplementacaoLembreteRepository implementacaoLembreteRepository;*/
-        
+    
+
     public Lembrete inserir(Lembrete parametros)
     {
         BeanProvider.autowire(this);
@@ -52,12 +55,6 @@ public class LembreteService
         verificaLembreteHoje(lembrete);
         
     }
-       
-   /* public List <Lembrete> getLembretesAtivos()
-    {
-        BeanProvider.autowire(this);
-        return implementacaoLembreteRepository.findAtivoOrdenado();
-    }*/
     
     public void verificaLembreteHoje(Lembrete lembrete)
     {                        
@@ -102,15 +99,15 @@ public class LembreteService
         for (Lembrete lembrete: lembretes)
         {
             if((lembrete.isDiario()) && lembrete.getHorario().equals(horas_minutos))
-            whatsapp(lembrete);  
+            selenium_call_whatsapp(lembrete);  
             else if((lembrete.getSemanal()==Dia_Semana_Mes.semanal()) && lembrete.getHorario().equals(horas_minutos))
-            whatsapp(lembrete);  
+            selenium_call_whatsapp(lembrete);  
             else if(((lembrete.getSemana_personalizado()!=null) && (lembrete.getSemana_personalizado().contains(Dia_Semana_Mes.semanal_personalizado())) && lembrete.getHorario().equals(horas_minutos)))
-            whatsapp(lembrete);  
+            selenium_call_whatsapp(lembrete);  
             else if((lembrete.getData()!=null) && (lembrete.getData().equals(Dia_Semana_Mes.unico())) && lembrete.getHorario().equals(horas_minutos))
-            whatsapp(lembrete);  
+            selenium_call_whatsapp(lembrete);  
             else if((lembrete.getMensal()==Dia_Semana_Mes.mensal()) && lembrete.getHorario().equals(horas_minutos))
-            whatsapp(lembrete);  
+            selenium_call_whatsapp(lembrete);  
         }
     }
     
@@ -124,10 +121,44 @@ public class LembreteService
        
        timer.schedule(lembrete_call, date);
     }
-
-    private void whatsapp(Lembrete lembrete)
+    
+    private void selenium_call_whatsapp(Lembrete lembrete)
     {
-        JOptionPane.showMessageDialog(null, "Deu o horario otário");
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+        
+       /* driver.get("https://web.selenium_call_whatsapp.com");
+        
+        while(driver.findElement(By.id("side"))==null)
+        {
+            try
+            { Thread.sleep(1); }
+            catch(InterruptedException ex)
+            {
+                
+            }
+        }    */
+                
+        driver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text="+lembrete.getDescricao());
+
+        while(driver.findElements(By.id("side")).size()<1 && driver.findElements(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]")).size()<1)
+        {
+            try
+            { Thread.sleep(1); }
+            catch(InterruptedException ex)
+            {
+                
+            }
+        }
+        
+        driver.findElement(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]")).sendKeys(Keys.ENTER);        
+        
+        try
+        { Thread.sleep(10); }
+        catch(InterruptedException ex)
+        {
+                
+        }
     }
     
     private class MyTimeTask extends TimerTask

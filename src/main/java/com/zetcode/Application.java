@@ -37,7 +37,7 @@ public class Application extends javax.swing.JFrame
         txt_dia_mes.setVisible(false);
         ativa_minimizar_aplicacao();
     }
-    
+        
     private void criar_lembrete()
     {
        boolean personalizado_valido = true;
@@ -298,7 +298,7 @@ public class Application extends javax.swing.JFrame
             }
         });
 
-        lbl_descricao.setText("Descrição:");
+        lbl_descricao.setText("Mensagem:");
         lbl_descricao.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
 
         txt_descricao.setColumns(20);
