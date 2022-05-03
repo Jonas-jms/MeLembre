@@ -11,7 +11,6 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.nio.file.Path;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import org.openqa.selenium.WebDriver;
@@ -25,7 +24,8 @@ import org.springframework.context.annotation.Bean;
 public class Application extends javax.swing.JFrame
 {   
     String dias = "";
-        
+    WebDriver webDriver;
+    
     public Application()
     { 
         initComponents();
@@ -51,15 +51,21 @@ public class Application extends javax.swing.JFrame
         
         File f = new File("C:\\MeLembreCache");
         if (f.isDirectory())
-        options.setHeadless(true);
+        {
+            //options.setHeadless(true);
+            options.addArguments("--no-sandbox");
+            options.addArguments("--hide-scrollbars");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--log-level=3");
+            options.addArguments("--mute-audio");
+        }
         else
         options.setHeadless(false);
         
         options.addArguments("user-data-dir=C:\\MeLembreCache");
         options.addArguments("user-agent=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36");
-        var webDriver = new ChromeDriver(options);
+        webDriver = new ChromeDriver(options);
         webDriver.get("https://web.whatsapp.com/");
-        webDriver.manage().window().maximize();
         return webDriver;
     }
     
@@ -115,7 +121,7 @@ public class Application extends javax.swing.JFrame
             
             LembreteController controller = new LembreteController();
             
-            if(controller.inserir(novo_lembrete)!=null)
+            if(controller.save(novo_lembrete)!=null)
             {
                 JOptionPane.showMessageDialog(null, "Lembrete cadastrado com sucesso!");
                 limpar_campos();
@@ -125,8 +131,6 @@ public class Application extends javax.swing.JFrame
                 picker_data.setVisible(false);
                 picker_data.setDate(null);
                 picker_horario.setTime(null);
-                
-                controller.agenda_novo(novo_lembrete);
             }
             else
             JOptionPane.showMessageDialog(null, "Houve um erro ao cadastrar o lembrete!");
@@ -198,7 +202,7 @@ public class Application extends javax.swing.JFrame
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         
         SystemTray systemTray = SystemTray.getSystemTray();
-        TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("src/main/java/com/zetcode/view/imagens/icone.png"));
+        TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("src/main/java/com/zetcode/view/icone.png"));
         PopupMenu popMenu = new PopupMenu();
         
         MenuItem show = new MenuItem("Mostrar o MeLembre!");
@@ -219,7 +223,10 @@ public class Application extends javax.swing.JFrame
           {
              @Override
              public void actionPerformed(ActionEvent e)
-             { System.exit(0); }
+             { 
+                 webDriver.quit();
+                 System.exit(0);
+             }
           }
         );
         

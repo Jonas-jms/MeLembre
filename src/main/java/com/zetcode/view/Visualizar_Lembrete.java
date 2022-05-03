@@ -526,10 +526,9 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
             
             LembreteController controller = new LembreteController();
             
-            if(controller.inserir(lembrete_alterado)!=null)
+            if(controller.save(lembrete_alterado)!=null)
             {
                 JOptionPane.showMessageDialog(null, "Lembrete alterado com sucesso!");
-                controller.agenda_novo(lembrete_alterado);
                 this.dispose();
             }
             else
@@ -552,14 +551,14 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
         if(lembrete.getAtivo().equals("Ativo"))
         {
             lembrete.setAtivo("Pausado");
-            new LembreteController().inserir(lembrete);
+            new LembreteController().save(lembrete);
             JOptionPane.showMessageDialog(null, "Lembrete pausado");
             bt_pausar_lembrete.setText("Reativar lembrete");
         }
         else
         {
             lembrete.setAtivo("Ativo");
-            new LembreteController().inserir(lembrete);
+            new LembreteController().save(lembrete);
             JOptionPane.showMessageDialog(null, "Lembrete reativado");
             bt_pausar_lembrete.setText("Pausar lembrete");
         }

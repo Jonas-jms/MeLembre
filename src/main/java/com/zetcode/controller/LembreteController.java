@@ -3,12 +3,20 @@ package com.zetcode.controller;
 import com.zetcode.util.TSUtil;
 import com.zetcode.model.Lembrete;
 import com.zetcode.service.LembreteService;
+import com.zetcode.util.BeanProvider;
 import java.util.List;
 import javax.swing.JOptionPane;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class LembreteController
 {
-    public Lembrete inserir(Lembrete parametros)
+    @Autowired
+    private LembreteService lembreteService;
+    
+    public LembreteController()
+    { BeanProvider.autowire(this); }
+    
+    public Lembrete save(Lembrete parametros)
     {
         Lembrete model = null;
         try
@@ -39,7 +47,7 @@ public class LembreteController
                             else
                             {
                                parametros.setTelefone("+55"+parametros.getTelefone());
-                               model = new LembreteService().inserir(parametros);
+                               model = lembreteService.save(parametros);
                             }
                     }
                 }
@@ -53,21 +61,16 @@ public class LembreteController
     
     public List<Lembrete> findAll()
     {
-        return new LembreteService().findAll();
+        return lembreteService.findAll();
     } 
     
     public void deleteLembrete(Lembrete lembrete)
     {
-        new LembreteService().deleteLembrete(lembrete);
+        lembreteService.deleteLembrete(lembrete);
     }
     
     public void getProgramacaoAtiva()
     {
-        new LembreteService().getProgramacaoAtiva();
-    }
-    
-    public void agenda_novo(Lembrete lembrete)
-    {
-        new LembreteService().agenda_novo(lembrete);
+        lembreteService.getProgramacaoAtiva();
     }
 }
