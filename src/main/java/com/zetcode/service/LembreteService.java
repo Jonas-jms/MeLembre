@@ -5,6 +5,9 @@ import com.zetcode.util.BeanProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.zetcode.repository.LembreteRepository;
 import com.zetcode.util.Dia_Semana_Mes;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -14,12 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.JOptionPane;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,8 +35,6 @@ public class LembreteService
     public List<Lembrete> lembretes;
 
     public List<Lembrete> horarios_lembretes = new ArrayList<>();
-    
-    int interator = 0;
     
     public void getProgramacaoAtiva()
     {        
@@ -98,81 +97,66 @@ public class LembreteService
        
        horarios_lembretes.add(lembrete); 
     }
-
+    
     private class MyTimeTask extends TimerTask
     {
         public void run()
         { 
             LocalTime horario_bruto = LocalTime.now();     
             LocalTime horas_minutos = LocalTime.of(horario_bruto.getHour(), horario_bruto.getMinute());
-            lembrete_action(horas_minutos);
+
+            for(Lembrete lembrete: horarios_lembretes)
+            {  
+                if(lembrete.getHorario().compareTo(horas_minutos)==0)
+                preparaLembrete(lembrete);
+            }
         }
     }
     
-    private void lembrete_action(LocalTime horas_minutos)
-    {
-            if(interator>horarios_lembretes.size())
-            interator=0;
-            
-            int i = interator;
-            
-            for(i=interator;i<horarios_lembretes.size();i++)
-            {
-                Lembrete lembrete = horarios_lembretes.get(i);
-                
-                if(lembrete.getHorario().compareTo(horas_minutos)==0)
-                preparaLembrete(lembrete, horas_minutos);
-            }  
-            
-            interator=0;
-    }
-    
-    private void preparaLembrete(Lembrete lembrete, LocalTime horas_minutos)
-    {                        
-            if(lembrete.getHorario().compareTo(horas_minutos)==0)
-            {
-                if((lembrete.isDiario()))
-                selenium_call_whatsapp(lembrete, horas_minutos);  
-                else if((lembrete.getSemanal()==Dia_Semana_Mes.semanal()))
-                selenium_call_whatsapp(lembrete, horas_minutos);  
-                else if(((lembrete.getSemana_personalizado()!=null) && (lembrete.getSemana_personalizado().contains(Dia_Semana_Mes.semanal_personalizado()))))
-                selenium_call_whatsapp(lembrete, horas_minutos);  
-                else if((lembrete.getData()!=null) && (lembrete.getData().equals(Dia_Semana_Mes.unico())))
-                selenium_call_whatsapp(lembrete, horas_minutos);  
-                else if((lembrete.getMensal()==Dia_Semana_Mes.mensal()))
-                selenium_call_whatsapp(lembrete, horas_minutos);  
-            }
+    private void preparaLembrete(Lembrete lembrete)
+    {      
+        if ((lembrete.isDiario()))
+        selenium_call_whatsapp(lembrete);
+        else if ((lembrete.getSemanal() == Dia_Semana_Mes.semanal()))
+        selenium_call_whatsapp(lembrete);
+        else if (((lembrete.getSemana_personalizado() != null) && (lembrete.getSemana_personalizado().contains(Dia_Semana_Mes.semanal_personalizado()))))
+        selenium_call_whatsapp(lembrete);
+        else if ((lembrete.getData() != null) && (lembrete.getData().equals(Dia_Semana_Mes.unico())))
+        selenium_call_whatsapp(lembrete);
+        else if ((lembrete.getMensal() == Dia_Semana_Mes.mensal()))
+        selenium_call_whatsapp(lembrete);
     }
        
-    private void selenium_call_whatsapp(Lembrete lembrete, LocalTime horas_minutos)
+    private void selenium_call_whatsapp(Lembrete lembrete)
     {        
-        JOptionPane.showMessageDialog(null, lembrete.getDescricao());
-        
-        String mensagem = "*"+lembrete.getTitulo()+"*"+"\n\n"+lembrete.getDescricao();
+        String mensagem = "Olá! O MeLembre! tem um lembrete pra você:\n\n"+"*"+lembrete.getTitulo()+"*"+"\n\n"+lembrete.getDescricao();
                 
-        webDriver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text="+mensagem);
+        StringSelection stringSelection= new StringSelection(mensagem);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+        
+        webDriver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text=");
         
         while(webDriver.findElements(By.id("side")).size()<1)
         {}
         
         selenium_sendMsg_whatsapp();  
-        
+                
         if(lembrete.getTipo_lembrete().equals("Único"))
         {
             lembrete.setAtivo("Pausado");
             
             save(lembrete);
         }
-        
-        horarios_lembretes.remove(lembrete);
-                
+
         Calendar segundos_inicio = Calendar.getInstance();
-        segundos_inicio.add(Calendar.SECOND, 10);
+        segundos_inicio.add(Calendar.SECOND,10);
 
         while(Calendar.getInstance().compareTo(segundos_inicio)!=0)
         {}
-
-        lembrete_action(horas_minutos);        
+        
+        stringSelection = new StringSelection("");
+        clipboard.setContents(stringSelection, null);
     }
     
     private void selenium_sendMsg_whatsapp()
@@ -186,7 +170,8 @@ public class LembreteService
             catch(Exception e)
             { selenium_sendMsg_whatsapp(); }
         }
-        elemento.get(0).sendKeys(Keys.ENTER);   
+        elemento.get(0).sendKeys(Keys.CONTROL+"v");
+        elemento.get(0).sendKeys(Keys.ENTER);        
     }
     
     public List<Lembrete> findAll()
@@ -218,16 +203,20 @@ public class LembreteService
 
         if(novo_lembrete!=null)
         {
-            if(found)
-            lembretes.removeIf(l -> (l.getId()==parametros.getId()));
+            int i;
             
-            lembretes.add(novo_lembrete);
+            for(i=0;i<lembretes.size();i++)
+            {
+                if(lembretes.get(i).getId()==novo_lembrete.getId())
+                lembretes.set(i, novo_lembrete);
+            }
 
-            found = horarios_lembretes.stream().anyMatch(p -> p.getId().equals(parametros.getId()));
-            
-            if(found)
-            horarios_lembretes.removeIf(l -> (l.getId()==parametros.getId()));
-            
+            for(i=0;i<horarios_lembretes.size();i++)
+            {
+                if(horarios_lembretes.get(i).getId()==novo_lembrete.getId())
+                horarios_lembretes.set(i, novo_lembrete);
+            }
+                        
             verificaLembreteHoje(novo_lembrete);
         }            
         return novo_lembrete;
