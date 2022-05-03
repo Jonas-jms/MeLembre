@@ -58,6 +58,7 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
         bt_save_lembrete = new javax.swing.JButton();
         bt_pausar_lembrete = new javax.swing.JButton();
         bt_deletar_lembrete = new javax.swing.JButton();
+        box_tipo_envio = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,7 +142,7 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
 
         check_sab.setText("Sábado");
 
-        lbl_whatsapp.setText("Informe o número do Whatsapp que irá receber o lembrete:");
+        lbl_whatsapp.setText("Informe como a mensagem será enviada:");
         lbl_whatsapp.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
 
         txt_whatsapp.addActionListener(new java.awt.event.ActionListener() {
@@ -166,11 +167,18 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
             }
         });
 
-        bt_deletar_lembrete.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         bt_deletar_lembrete.setText("Deletar lembrete");
+        bt_deletar_lembrete.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         bt_deletar_lembrete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_deletar_lembreteActionPerformed(evt);
+            }
+        });
+
+        box_tipo_envio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Para um contato salvo (informe o nome do contato):", "Para um número de telefone (informe o número):" }));
+        box_tipo_envio.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                box_tipo_envioItemStateChanged(evt);
             }
         });
 
@@ -181,20 +189,6 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbl_descricao)
-                            .addComponent(lbl_dataHorario)
-                            .addComponent(lbl_titulo))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jScrollPane1)
-                                .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbl_tipoLembrete)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -221,13 +215,29 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_dia_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lbl_whatsapp)
-                    .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bt_pausar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bt_deletar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(bt_deletar_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbl_descricao)
+                            .addComponent(lbl_dataHorario)
+                            .addComponent(lbl_titulo))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 690, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(140, Short.MAX_VALUE)
@@ -286,8 +296,10 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
                     .addComponent(txt_dia_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(6, 6, 6)
                 .addComponent(lbl_whatsapp)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -366,6 +378,10 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
         deletar_lembrete();
     }//GEN-LAST:event_bt_deletar_lembreteActionPerformed
 
+    private void box_tipo_envioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_box_tipo_envioItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_box_tipo_envioItemStateChanged
+
     public static void main(String args[])
     {     
         java.awt.EventQueue.invokeLater(() -> {
@@ -378,7 +394,18 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
        txt_titulo.setText(lembrete.getTitulo());
        txt_descricao.setText(lembrete.getDescricao());
        picker_horario.setTime(lembrete.getHorario());
-       txt_whatsapp.setText(lembrete.getTelefone());
+       
+       String telefone = "";
+       
+       if(lembrete.getTelefone().contains("+55"))
+       {
+           box_tipo_envio.setSelectedIndex(1);
+           telefone = lembrete.getTelefone().replace("+55", "");
+       }
+       else
+       telefone = lembrete.getTelefone();
+       
+       txt_whatsapp.setText(telefone);
        
        if(lembrete.getTipo_lembrete().equals("Único"))
        {
@@ -473,10 +500,14 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
     {
        boolean personalizado_valido = true;
         
-       Lembrete lembrete_alterado = new Lembrete(); 
-       
+       Lembrete lembrete_alterado = new Lembrete();
        lembrete_alterado.setId(lembrete.getId());
-       lembrete_alterado.setTelefone(txt_whatsapp.getText().replace("+55",""));
+       
+       if(box_tipo_envio.getSelectedIndex()==1)
+       lembrete_alterado.setTelefone("+55"+txt_whatsapp.getText());
+       else
+       lembrete_alterado.setTelefone(txt_whatsapp.getText());   
+       
        lembrete_alterado.setTitulo(txt_titulo.getText());
        lembrete_alterado.setDescricao(txt_descricao.getText());
        lembrete_alterado.setHorario(picker_horario.getTime());
@@ -604,6 +635,7 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> box_dia_semanal;
+    private javax.swing.JComboBox<String> box_tipo_envio;
     private javax.swing.JComboBox<String> box_tipo_lembrete;
     private javax.swing.JButton bt_deletar_lembrete;
     private javax.swing.JButton bt_lembreteRecorrente;

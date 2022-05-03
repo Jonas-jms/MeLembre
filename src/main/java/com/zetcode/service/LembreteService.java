@@ -84,7 +84,7 @@ public class LembreteService
     {   
        boolean found = horarios_lembretes.stream().anyMatch(p -> p.getHorario().equals(lembrete.getHorario()));
         
-       if(!found)
+       if(!found && lembrete.getAtivo().equals("Ativo"))
        {
             Timer timer = new Timer();
             
@@ -128,17 +128,25 @@ public class LembreteService
     }
        
     private void selenium_call_whatsapp(Lembrete lembrete)
-    {        
-        String mensagem = "Olá! O MeLembre! tem um lembrete pra você:\n\n"+"*"+lembrete.getTitulo()+"*"+"\n\n"+lembrete.getDescricao();
-                
-        StringSelection stringSelection= new StringSelection(mensagem);
+    {              
+        StringSelection stringSelection= new StringSelection(lembrete.getTelefone());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
         
-        webDriver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text=");
+        if(!lembrete.getTelefone().contains("+55"))
+        findContato(lembrete.getTelefone());
+        else
+        {
+            webDriver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text=");
+            while(webDriver.findElements(By.id("side")).size()<1)
+            {}
+        }
+
+        String mensagem = "*"+lembrete.getTitulo()+"*"+"\n\n"+lembrete.getDescricao();
         
-        while(webDriver.findElements(By.id("side")).size()<1)
-        {}
+        stringSelection= new StringSelection(mensagem);
+        clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
         
         selenium_sendMsg_whatsapp();  
                 
@@ -159,6 +167,36 @@ public class LembreteService
         clipboard.setContents(stringSelection, null);
     }
     
+    private void findContato(String nomeContato)
+    {
+        String xPathContato = "//*[@id=\"side\"]/div[1]/div/label/div/div[2]";
+        List <WebElement> elemento = webDriver.findElements(By.xpath(xPathContato));
+        
+        while(elemento.size()<1)
+        {
+            try
+            { elemento = webDriver.findElements(By.xpath(xPathContato)); }
+            catch(Exception e)
+            { findContato(nomeContato); }
+        }
+        
+        elemento.get(0).sendKeys(Keys.CONTROL+"v");
+        
+        xPathContato = "//*[@id=\"pane-side\"]/*//span[@title='" + nomeContato + "']";
+        
+        elemento = webDriver.findElements(By.xpath(xPathContato));
+        
+        while(elemento.size()<1)
+        {
+            try
+            { elemento = webDriver.findElements(By.xpath(xPathContato)); }
+            catch(Exception e)
+            { findContato(nomeContato); }
+        }
+        
+        elemento.get(0).click();
+    }
+    
     private void selenium_sendMsg_whatsapp()
     {
         List <WebElement> elemento = webDriver.findElements(By.xpath("/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]"));
@@ -170,6 +208,7 @@ public class LembreteService
             catch(Exception e)
             { selenium_sendMsg_whatsapp(); }
         }
+        
         elemento.get(0).sendKeys(Keys.CONTROL+"v");
         elemento.get(0).sendKeys(Keys.ENTER);        
     }
@@ -201,6 +240,8 @@ public class LembreteService
         
         novo_lembrete = lembreteRepository.save(parametros);
 
+        found=false;
+        
         if(novo_lembrete!=null)
         {
             int i;
@@ -208,14 +249,14 @@ public class LembreteService
             for(i=0;i<lembretes.size();i++)
             {
                 if(lembretes.get(i).getId()==novo_lembrete.getId())
-                lembretes.set(i, novo_lembrete);
+                {
+                    found=true;
+                    lembretes.set(i, novo_lembrete);
+                }
             }
 
-            for(i=0;i<horarios_lembretes.size();i++)
-            {
-                if(horarios_lembretes.get(i).getId()==novo_lembrete.getId())
-                horarios_lembretes.set(i, novo_lembrete);
-            }
+            if(!found)
+            lembretes.add(novo_lembrete);
                         
             verificaLembreteHoje(novo_lembrete);
         }            

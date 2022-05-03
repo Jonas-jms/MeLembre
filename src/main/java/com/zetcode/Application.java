@@ -41,6 +41,7 @@ public class Application extends javax.swing.JFrame
         lbl_quando_lembrar.setVisible(false);
         lbl_informe_dia.setVisible(false);
         txt_dia_mes.setVisible(false);
+        box_tipo_envio.setVisible(false);
         ativa_minimizar_aplicacao();
     }
         
@@ -75,7 +76,11 @@ public class Application extends javax.swing.JFrame
        
        Lembrete novo_lembrete = new Lembrete();
 
-       novo_lembrete.setTelefone(txt_whatsapp.getText());
+       if(box_tipo_envio.getSelectedIndex()==1)
+       novo_lembrete.setTelefone("+55"+txt_whatsapp.getText());
+       else
+       novo_lembrete.setTelefone(txt_whatsapp.getText());   
+       
        novo_lembrete.setTitulo(txt_titulo.getText());
        novo_lembrete.setDescricao(txt_descricao.getText());
        novo_lembrete.setHorario(picker_horario.getTime());
@@ -120,7 +125,7 @@ public class Application extends javax.swing.JFrame
             novo_lembrete.setAtivo("Ativo");
             
             LembreteController controller = new LembreteController();
-            
+
             if(controller.save(novo_lembrete)!=null)
             {
                 JOptionPane.showMessageDialog(null, "Lembrete cadastrado com sucesso!");
@@ -153,6 +158,7 @@ public class Application extends javax.swing.JFrame
             
     private void show_lembrete_unico(boolean hide)
     {
+        box_tipo_envio.setVisible(hide);
         lbl_titulo.setVisible(hide);
         txt_titulo.setVisible(hide);
         lbl_descricao.setVisible(hide);
@@ -166,6 +172,7 @@ public class Application extends javax.swing.JFrame
      
     private void show_lembrete_recorrente(boolean hide)
     {
+        box_tipo_envio.setVisible(hide);
         lbl_titulo.setVisible(hide);
         txt_titulo.setVisible(hide);
         lbl_descricao.setVisible(hide);
@@ -280,6 +287,7 @@ public class Application extends javax.swing.JFrame
         lbl_whatsapp = new javax.swing.JLabel();
         txt_whatsapp = new javax.swing.JTextField();
         bt_save_lembrete = new javax.swing.JButton();
+        box_tipo_envio = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
@@ -404,6 +412,13 @@ public class Application extends javax.swing.JFrame
             }
         });
 
+        box_tipo_envio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Para um contato salvo (informe o nome do contato):", "Para um número de telefone (informe o número):" }));
+        box_tipo_envio.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                box_tipo_envioItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -424,9 +439,8 @@ public class Application extends javax.swing.JFrame
                                         .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jScrollPane1)
-                                        .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lbl_tipoLembrete)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -453,8 +467,12 @@ public class Application extends javax.swing.JFrame
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txt_dia_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lbl_whatsapp)
-                            .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(bt_save_lembrete, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(282, 282, 282)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -518,10 +536,14 @@ public class Application extends javax.swing.JFrame
                     .addComponent(txt_dia_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(6, 6, 6)
                 .addComponent(lbl_whatsapp)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, 0)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         pack();
@@ -625,6 +647,10 @@ public class Application extends javax.swing.JFrame
         getProgramacaoAtiva();
     }//GEN-LAST:event_formWindowOpened
 
+    private void box_tipo_envioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_box_tipo_envioItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_box_tipo_envioItemStateChanged
+
     public static void main(String args[])
     {
         SpringApplication.run(Application.class, args);
@@ -637,6 +663,7 @@ public class Application extends javax.swing.JFrame
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> box_dia_semanal;
+    private javax.swing.JComboBox<String> box_tipo_envio;
     private javax.swing.JComboBox<String> box_tipo_lembrete;
     private javax.swing.JButton bt_lembreteRecorrente;
     private javax.swing.JButton bt_lembreteUnico;

@@ -21,10 +21,6 @@ public class LembreteController
         Lembrete model = null;
         try
         {
-            if(TSUtil.isEmpty(parametros.getTitulo()))
-            JOptionPane.showMessageDialog(null, "O campo Título do lembrete não pode estar em branco");
-            else
-            {
                 if(TSUtil.isEmpty(parametros.getDescricao()))
                 JOptionPane.showMessageDialog(null, "O campo Descrição do lembrete não pode estar em branco");
                 else
@@ -33,25 +29,31 @@ public class LembreteController
                     JOptionPane.showMessageDialog(null, "O campo Horário do lembrete deve ser selecionado");
                     else
                     {
-                            if(parametros.getTelefone().contains(" "))
-                            parametros.getTelefone().replace(" ", "");
-                            if(parametros.getTelefone().contains("-"))
-                            parametros.getTelefone().replace("-", "");
-                            if(parametros.getTelefone().contains("("))
-                            parametros.getTelefone().replace("(", "");
-                            if(parametros.getTelefone().contains(")"))
-                            parametros.getTelefone().replace(")", "");
+                            if(parametros.getTelefone().contains("+55"))
+                            {
+                                if(parametros.getTelefone().contains(" "))
+                                parametros.getTelefone().replace(" ", "");
+                                if(parametros.getTelefone().contains("-"))
+                                parametros.getTelefone().replace("-", "");
+                                if(parametros.getTelefone().contains("("))
+                                parametros.getTelefone().replace("(", "");
+                                if(parametros.getTelefone().contains(")"))
+                                parametros.getTelefone().replace(")", "");
 
-                            if(parametros.getTelefone().length()!=10 && parametros.getTelefone().length()!=11)
-                            JOptionPane.showMessageDialog(null, "Favor informar um número válido (verificar se DDD foi incluso)");
+                                if(parametros.getTelefone().length()!=13 && parametros.getTelefone().length()!=14)
+                                JOptionPane.showMessageDialog(null, "Favor informar um número válido (verificar se DDD foi incluso)");
+                                else
+                                model = lembreteService.save(parametros);
+                            }
                             else
                             {
-                               parametros.setTelefone("+55"+parametros.getTelefone());
+                               if(parametros.getTelefone().isEmpty())
+                               JOptionPane.showMessageDialog(null, "O nome do contato não pode estar em branco!");
+                               else
                                model = lembreteService.save(parametros);
                             }
                     }
                 }
-            }
         }  
         catch (Exception e)
         { JOptionPane.showMessageDialog(null, e); }
