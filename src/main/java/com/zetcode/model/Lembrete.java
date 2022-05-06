@@ -2,12 +2,14 @@ package com.zetcode.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.TimerTask;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "lembrete")
@@ -50,6 +52,9 @@ public class Lembrete {
 
     @Column(name="ativo")
     private String ativo;
+    
+    @Transient
+    private TimerTask timer_lembrete;
     
     public Lembrete() {
     }
@@ -153,4 +158,14 @@ public class Lembrete {
     public void setAtivo(String ativo) {
         this.ativo = ativo;
     }
+
+    public TimerTask getTimer_lembrete() {
+        return timer_lembrete;
+    }
+
+    public void setTimer_lembrete(TimerTask timer_lembrete) {
+        this.timer_lembrete = timer_lembrete;
+    }
+    
+    
 }
