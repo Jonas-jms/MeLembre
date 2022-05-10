@@ -11,12 +11,12 @@ import java.awt.datatransfer.StringSelection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.swing.JOptionPane;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.Keys;
@@ -32,143 +32,95 @@ public class LembreteService
     @Autowired
     private WebDriver webDriver;
 
-    private List<Lembrete> lembretes;
-    
-    private Timer timer = new Timer();
-    
-    private Lembrete lembrete_go;
-    
+    public List<Lembrete> lembretes;
+
+    public List<Lembrete> horarios_lembretes = new ArrayList<>();
+        
     public void getProgramacaoAtiva()
     {        
         BeanProvider.autowire(this);
         lembretes =  lembreteRepository.findAll();
 
-        verificaLembreteHoje();   
+        for(Lembrete lembrete: lembretes)
+        verificaLembreteHoje(lembrete);   
     }
     
-    private void verificaLembreteHoje()
+    private void verificaLembreteHoje(Lembrete lembrete)
     {                        
         LocalTime horario_bruto = LocalTime.now();     
         LocalTime horas_minutos = LocalTime.of(horario_bruto.getHour(), horario_bruto.getMinute());
 
-        int i;
-        
-        for(i=0;i<lembretes.size();i++)
+        if(lembrete.getAtivo().equals("Ativo"))
         {
-            if(lembretes.get(i).getAtivo().equals("Ativo"))
+            if(lembrete.isDiario())
             {
-                if(lembretes.get(i).isDiario())
-                {
-                    if(horas_minutos.compareTo(lembretes.get(i).getHorario())<1 || horas_minutos.compareTo(lembretes.get(i).getHorario())==0)
-                    {
-                        lembretes.get(i).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembretes.get(i)); 
-                    }
-                }
-                else if(lembretes.get(i).getSemanal()==Dia_Semana_Mes.semanal())
-                {
-                    if(horas_minutos.compareTo(lembretes.get(i).getHorario())<1 || horas_minutos.compareTo(lembretes.get(i).getHorario())==0)
-                    {
-                        lembretes.get(i).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembretes.get(i)); 
-                    }   
-                }
-                else if((lembretes.get(i).getSemana_personalizado()!=null) && (lembretes.get(i).getSemana_personalizado().contains(Dia_Semana_Mes.semanal_personalizado())))
-                {
-                    if(horas_minutos.compareTo(lembretes.get(i).getHorario())<1 || horas_minutos.compareTo(lembretes.get(i).getHorario())==0)
-                    {
-                        lembretes.get(i).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembretes.get(i)); 
-                    }
-                }
-                else if((lembretes.get(i).getData()!=null && (lembretes.get(i).getData().equals(Dia_Semana_Mes.unico()))))
-                {
-                    if(horas_minutos.compareTo(lembretes.get(i).getHorario())<1 || horas_minutos.compareTo(lembretes.get(i).getHorario())==0)
-                    {
-                        lembretes.get(i).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembretes.get(i)); 
-                    }
-                }
-                else if(lembretes.get(i).getMensal()==Dia_Semana_Mes.mensal())
-                {
-                    if(horas_minutos.compareTo(lembretes.get(i).getHorario())<1 || horas_minutos.compareTo(lembretes.get(i).getHorario())==0)
-                    {
-                        lembretes.get(i).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembretes.get(i)); 
-                    }
-                }
+                if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
+                agendador(lembrete); 
+            }
+            else if(lembrete.getSemanal()==Dia_Semana_Mes.semanal())
+            {
+                if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
+                agendador(lembrete); 
+            }
+            else if((lembrete.getSemana_personalizado()!=null) && (lembrete.getSemana_personalizado().contains(Dia_Semana_Mes.semanal_personalizado())))
+            {
+                if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
+                agendador(lembrete); 
+            }
+            else if((lembrete.getData()!=null && (lembrete.getData().equals(Dia_Semana_Mes.unico()))))
+            {
+                if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
+                agendador(lembrete); 
+            }
+            else if(lembrete.getMensal()==Dia_Semana_Mes.mensal())
+            {
+                if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
+                agendador(lembrete);
             }
         }
-    }
-    
-    private void verifica_lembrete_unico(Lembrete lembrete)
-    {
-        LocalTime horario_bruto = LocalTime.now();     
-        LocalTime horas_minutos = LocalTime.of(horario_bruto.getHour(), horario_bruto.getMinute());
-
-            if(lembrete.getAtivo().equals("Ativo"))
-            {
-                if(lembrete.isDiario())
-                {
-                    if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
-                    {
-                        lembretes.get(lembretes.size()-1).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembrete); 
-                    }
-                }
-                else if(lembrete.getSemanal()==Dia_Semana_Mes.semanal())
-                {
-                    if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
-                    {
-                        lembretes.get(lembretes.size()-1).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembrete); 
-                    }   
-                }
-                else if((lembrete.getSemana_personalizado()!=null) && (lembrete.getSemana_personalizado().contains(Dia_Semana_Mes.semanal_personalizado())))
-                {
-                    if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
-                    {
-                        lembretes.get(lembretes.size()-1).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembrete); 
-                    }
-                }
-                else if((lembrete.getData()!=null && (lembrete.getData().equals(Dia_Semana_Mes.unico()))))
-                {
-                    if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
-                    {
-                        lembretes.get(lembretes.size()-1).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembrete); 
-                    }
-                }
-                else if(lembrete.getMensal()==Dia_Semana_Mes.mensal())
-                {
-                    if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
-                    {
-                        lembretes.get(lembretes.size()-1).setTimer_lembrete(new MyTimeTask());
-                        agendador(lembrete); 
-                    }
-                }
-            }
-            
     }
     
     private void agendador(Lembrete lembrete)
     {   
-        Date date = Date.from(lembrete.getHorario().atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant());
-
-        timer.schedule(lembrete.getTimer_lembrete(), date);
-              
-        lembrete_go = lembrete;
-    }
+       boolean found = horarios_lembretes.stream().anyMatch(p -> p.getHorario().equals(lembrete.getHorario()));
         
+       if(!found)
+       {
+            Timer timer = new Timer();
+            
+            Date date = Date.from(lembrete.getHorario().atDate(LocalDate.now()).atZone(ZoneId.systemDefault()).toInstant());
+
+            MyTimeTask lembrete_call = new MyTimeTask();
+
+            timer.schedule(lembrete_call, date);
+       }
+       
+       horarios_lembretes.add(lembrete); 
+    }
+    
     private class MyTimeTask extends TimerTask
     {
         public void run()
         { 
-            preparaLembrete(lembrete_go);
+            LocalTime horario_bruto = LocalTime.now();     
+            LocalTime horas_minutos = LocalTime.of(horario_bruto.getHour(), horario_bruto.getMinute());
+
+            List<Long> horarios_finalizados = new ArrayList<>();
+            
+            for(Lembrete lembrete: horarios_lembretes)
+            {  
+                if(lembrete.getHorario().compareTo(horas_minutos)==0)
+                {
+                    preparaLembrete(lembrete);
+                    horarios_finalizados.add(lembrete.getId());
+                }
+            }
+
+            for(Long horariosFinalizados: horarios_finalizados)
+            horarios_lembretes.removeIf(hl -> (hl.getId()==horariosFinalizados));
         }
     }
-        
+    
     private void preparaLembrete(Lembrete lembrete)
     {      
         if ((lembrete.isDiario()))
@@ -262,60 +214,51 @@ public class LembreteService
     public void deleteLembrete(Lembrete lembrete)
     {
        BeanProvider.autowire(this);
-       
-       int i;
-       
-       for(i=0;i<lembretes.size();i++)
-       {
-           if(lembretes.get(i).getId()==lembrete.getId())
-           {
-               if(lembretes.get(i).getTimer_lembrete()!=null)
-               lembretes.get(i).getTimer_lembrete().cancel();
-               
-               break;
-           }
-       }
-
        lembreteRepository.deleteById(lembrete.getId());
               
        lembretes.remove(lembrete);
+       
+       if(horarios_lembretes.contains(lembrete))
+       horarios_lembretes.remove(lembrete);
     }
     
-    public Lembrete save(Lembrete lembrete)
+    public Lembrete save(Lembrete parametros)
     {
         BeanProvider.autowire(this);
         
         Lembrete novo_lembrete = new Lembrete();
         
-        int i;
-        boolean found=false;
+        boolean found = lembretes.stream().anyMatch(p -> p.getId().equals(parametros.getId()));
         
- 
-        for(i=0;i<lembretes.size();i++)
-        {
-            if(lembretes.get(i).getId()==lembrete.getId())
-            {
-                if(lembretes.get(i).getTimer_lembrete()!=null)
-                lembretes.get(i).getTimer_lembrete().cancel();
-                found=true;
-                break;
-            }
-         }
-       
         if(found)
-        {
-            novo_lembrete.setId(lembrete.getId());
-            lembretes.removeIf(l -> (l.getId()==lembrete.getId()));
-        }
-
-        novo_lembrete = lembreteRepository.save(lembrete);
-                
-        if(novo_lembrete!=null)
-        {   
-            lembretes.add(novo_lembrete);
-            verifica_lembrete_unico(novo_lembrete);
-        }
+        novo_lembrete.setId(parametros.getId());
         
+        novo_lembrete = lembreteRepository.save(parametros);
+
+        found = false;
+        
+        if(novo_lembrete!=null)
+        {
+            int i;
+            
+            for(i=0;i<lembretes.size();i++)
+            {
+                if(lembretes.get(i).getId()==novo_lembrete.getId())
+                {
+                    lembretes.set(i, novo_lembrete);
+                    found = true;
+                }
+            }
+
+            if(!found)
+            lembretes.add(novo_lembrete);
+
+            Long id = novo_lembrete.getId();
+            
+            horarios_lembretes.removeIf(l -> (l.getId()==id));
+            
+            verificaLembreteHoje(novo_lembrete);
+        }            
         return novo_lembrete;
     }
 }

@@ -42,7 +42,7 @@ public class Application extends javax.swing.JFrame
         lbl_informe_dia.setVisible(false);
         txt_dia_mes.setVisible(false);
         box_tipo_envio.setVisible(false);
-        //ativa_minimizar_aplicacao();
+        ativa_minimizar_aplicacao();
     }
         
     @Bean
@@ -203,7 +203,7 @@ public class Application extends javax.swing.JFrame
          check_dom.setSelected(false);
      }
     
-    /*private void ativa_minimizar_aplicacao()
+    private void ativa_minimizar_aplicacao()
     {
         if(SystemTray.isSupported()==true)
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
@@ -250,7 +250,7 @@ public class Application extends javax.swing.JFrame
      
     private void desminimiza_aplicacao()
     { this.setVisible(true); }
-    */
+    
     private void getProgramacaoAtiva()
     { new LembreteController().getProgramacaoAtiva(); }
     
