@@ -16,9 +16,9 @@ public class LembreteController
     public LembreteController()
     { BeanProvider.autowire(this); }
     
-    public Lembrete save(Lembrete parametros)
+    public boolean save(Lembrete parametros)
     {
-        Lembrete model = null;
+        boolean sucesso = false;
         try
         {
                 if(TSUtil.isEmpty(parametros.getDescricao()))
@@ -43,14 +43,14 @@ public class LembreteController
                                 if(parametros.getTelefone().length()!=13 && parametros.getTelefone().length()!=14)
                                 JOptionPane.showMessageDialog(null, "Favor informar um número válido (verificar se DDD foi incluso)");
                                 else
-                                model = lembreteService.save(parametros);
+                                sucesso = lembreteService.save(parametros);
                             }
                             else
                             {
                                if(parametros.getTelefone().isEmpty())
                                JOptionPane.showMessageDialog(null, "O nome do contato não pode estar em branco!");
                                else
-                               model = lembreteService.save(parametros);
+                               sucesso = lembreteService.save(parametros);
                             }
                     }
                 }
@@ -58,7 +58,7 @@ public class LembreteController
         catch (Exception e)
         { JOptionPane.showMessageDialog(null, e); }
 
-        return model;
+        return sucesso;
     }
     
     public List<Lembrete> findAll()

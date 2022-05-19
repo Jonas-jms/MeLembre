@@ -1,7 +1,6 @@
 package com.zetcode.service;
 
 import com.zetcode.model.Lembrete;
-import com.zetcode.util.BeanProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.zetcode.repository.LembreteRepository;
 import com.zetcode.util.Dia_Semana_Mes;
@@ -26,8 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LembreteService
 {
-    //@Autowired
-    private LembreteRepository lembreteRepository;
+    private LembreteRepository lembreteRepository = new LembreteRepository();;
     
     @Autowired
     private WebDriver webDriver;
@@ -37,9 +35,8 @@ public class LembreteService
     public List<Lembrete> horarios_lembretes = new ArrayList<>();
         
     public void getProgramacaoAtiva()
-    {        
-        BeanProvider.autowire(this);
-        //lembretes =  lembreteRepository.findAll();
+    {
+        lembretes =  lembreteRepository.findAll();
 
         for(Lembrete lembrete: lembretes)
         verificaLembreteHoje(lembrete);   
@@ -71,11 +68,6 @@ public class LembreteService
             {
                 if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
                 agendador(lembrete); 
-            }
-            else if(lembrete.getMensal()==Dia_Semana_Mes.mensal())
-            {
-                if(horas_minutos.compareTo(lembrete.getHorario())<1 || horas_minutos.compareTo(lembrete.getHorario())==0)
-                agendador(lembrete);
             }
         }
     }
@@ -130,8 +122,6 @@ public class LembreteService
         else if (((lembrete.getSemana_personalizado() != null) && (lembrete.getSemana_personalizado().contains(Dia_Semana_Mes.semanal_personalizado()))))
         selenium_call_whatsapp(lembrete);
         else if ((lembrete.getData() != null) && (lembrete.getData().equals(Dia_Semana_Mes.unico())))
-        selenium_call_whatsapp(lembrete);
-        else if ((lembrete.getMensal() == Dia_Semana_Mes.mensal()))
         selenium_call_whatsapp(lembrete);
     }
        
@@ -213,8 +203,7 @@ public class LembreteService
     
     public void deleteLembrete(Lembrete lembrete)
     {
-       BeanProvider.autowire(this);
-       //lembreteRepository.deleteById(lembrete.getId());
+       lembreteRepository.deleteById(lembrete.getId());
               
        lembretes.remove(lembrete);
        
@@ -222,43 +211,49 @@ public class LembreteService
        horarios_lembretes.remove(lembrete);
     }
     
-    public Lembrete save(Lembrete parametros)
-    {
-        BeanProvider.autowire(this);
+    public boolean save(Lembrete lembrete)
+    {        
+        boolean found = lembretes.stream().anyMatch(p -> p.getId().equals(lembrete.getId()));
         
-        Lembrete novo_lembrete = new Lembrete();
-        
-        boolean found = lembretes.stream().anyMatch(p -> p.getId().equals(parametros.getId()));
+        boolean sucesso = false;
         
         if(found)
-        novo_lembrete.setId(parametros.getId());
-        
-        //novo_lembrete = lembreteRepository.save(parametros);
+        sucesso = lembreteRepository.update(lembrete);
+        else
+        {
+            Long id = lembreteRepository.save(lembrete);
+            
+            if(id!=null)
+            {
+                lembrete.setId(id);
+                sucesso = true;
+            }
+        }
 
         found = false;
         
-        if(novo_lembrete!=null)
+        if(sucesso)
         {
             int i;
             
             for(i=0;i<lembretes.size();i++)
             {
-                if(lembretes.get(i).getId()==novo_lembrete.getId())
+                if(lembretes.get(i).getId()==lembrete.getId())
                 {
-                    lembretes.set(i, novo_lembrete);
+                    lembretes.set(i, lembrete);
                     found = true;
                 }
             }
 
             if(!found)
-            lembretes.add(novo_lembrete);
+            lembretes.add(lembrete);
 
-            Long id = novo_lembrete.getId();
+            Long id = lembrete.getId();
             
             horarios_lembretes.removeIf(l -> (l.getId()==id));
             
-            verificaLembreteHoje(novo_lembrete);
+            verificaLembreteHoje(lembrete);
         }            
-        return novo_lembrete;
+        return sucesso;
     }
 }

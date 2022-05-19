@@ -12,7 +12,7 @@ public class Conexao_Banco
       Connection conexao = null;
       try
       {
-        String url = "jdbc:sqlite:banco/MVC.db";
+        String url = "jdbc:sqlite:banco/MeLembre_DB.db";
         conexao = DriverManager.getConnection(url);
         return conexao;
       }

@@ -53,11 +53,6 @@
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                       <Component id="check_dom" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" attributes="0">
-                      <Component id="lbl_informe_dia" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txt_dia_mes" min="-2" pref="28" max="-2" attributes="0"/>
-                  </Group>
                   <Component id="lbl_whatsapp" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="bt_save_lembrete" min="-2" pref="227" max="-2" attributes="0"/>
@@ -141,23 +136,16 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lbl_quando_lembrar" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="check_seg" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="check_ter" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="check_qua" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="check_qui" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="check_dom" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="box_dia_semanal" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="check_sex" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="check_sab" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lbl_informe_dia" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="txt_dia_mes" min="-2" pref="23" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="check_seg" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="check_ter" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="check_qua" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="check_qui" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="check_dom" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="box_dia_semanal" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="check_sex" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="check_sab" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
               <Component id="lbl_whatsapp" min="-2" max="-2" attributes="0"/>
@@ -274,12 +262,11 @@
     <Component class="javax.swing.JComboBox" name="box_tipo_lembrete">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="5">
+          <StringArray count="4">
             <StringItem index="0" value="Selecione o tipo de lembrete:"/>
             <StringItem index="1" value="Todo dia"/>
             <StringItem index="2" value="Semanal"/>
-            <StringItem index="3" value="Mensal"/>
-            <StringItem index="4" value="Personalizado"/>
+            <StringItem index="3" value="Personalizado"/>
           </StringArray>
         </Property>
       </Properties>
@@ -340,19 +327,6 @@
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
       </AuxValues>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lbl_informe_dia">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Informe o dia do m&#xea;s que deseja ser lembrado:"/>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="Helvetica" size="22" style="0"/>
-        </Property>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="txt_dia_mes">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_dia_mesActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="check_sex">
       <Properties>

@@ -34,13 +34,9 @@ public class Application extends javax.swing.JFrame
         bt_save_lembrete.setVisible(false);
         box_dia_semanal.setVisible(false);
         show_semanal_personalizado(false);
-        lbl_informe_dia.setVisible(false);
-        txt_dia_mes.setVisible(false);
         lbl_whatsapp.setVisible(false);
         txt_whatsapp.setVisible(false);
         lbl_quando_lembrar.setVisible(false);
-        lbl_informe_dia.setVisible(false);
-        txt_dia_mes.setVisible(false);
         box_tipo_envio.setVisible(false);
         ativa_minimizar_aplicacao();
     }
@@ -96,8 +92,6 @@ public class Application extends javax.swing.JFrame
        else if(box_tipo_lembrete.getSelectedIndex()==2)
        novo_lembrete.setSemanal(box_dia_semanal.getSelectedIndex()+1);
        else if(box_tipo_lembrete.getSelectedIndex()==3)
-       novo_lembrete.setMensal(Integer.parseInt(txt_dia_mes.getText()));
-       else if(box_tipo_lembrete.getSelectedIndex()==4)
        {           
            if(check_seg.isSelected())
            dias+="1,";
@@ -111,7 +105,7 @@ public class Application extends javax.swing.JFrame
            dias+="5,";
            if(check_sab.isSelected())
            dias+="6,";
-           if(check_sab.isSelected())
+           if(check_dom.isSelected())
            dias+="7,";
            
            if(dias.equals(""))
@@ -126,7 +120,7 @@ public class Application extends javax.swing.JFrame
             
             LembreteController controller = new LembreteController();
 
-            if(controller.save(novo_lembrete)!=null)
+            if(controller.save(novo_lembrete)!=false)
             {
                 JOptionPane.showMessageDialog(null, "Lembrete cadastrado com sucesso!");
                 limpar_campos();
@@ -183,7 +177,8 @@ public class Application extends javax.swing.JFrame
         box_tipo_lembrete.setVisible(hide);
         lbl_whatsapp.setVisible(hide);
         txt_whatsapp.setVisible(hide);
-       
+        lbl_quando_lembrar.setVisible(hide);
+        box_dia_semanal.setVisible(hide);
      }
     
     private void limpar_campos()
@@ -191,7 +186,6 @@ public class Application extends javax.swing.JFrame
          txt_titulo.setText("");
          txt_descricao.setText("");
          txt_whatsapp.setText("");
-         txt_dia_mes.setText("");
          box_tipo_lembrete.setSelectedIndex(0);
          box_dia_semanal.setSelectedIndex(0);
          check_seg.setSelected(false);
@@ -280,8 +274,6 @@ public class Application extends javax.swing.JFrame
         check_qui = new javax.swing.JCheckBox();
         check_dom = new javax.swing.JCheckBox();
         box_dia_semanal = new javax.swing.JComboBox<>();
-        lbl_informe_dia = new javax.swing.JLabel();
-        txt_dia_mes = new javax.swing.JTextField();
         check_sex = new javax.swing.JCheckBox();
         check_sab = new javax.swing.JCheckBox();
         lbl_whatsapp = new javax.swing.JLabel();
@@ -360,7 +352,7 @@ public class Application extends javax.swing.JFrame
         lbl_tipoLembrete.setText("Tipo de lembrete:");
         lbl_tipoLembrete.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
 
-        box_tipo_lembrete.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione o tipo de lembrete:", "Todo dia", "Semanal", "Mensal", "Personalizado" }));
+        box_tipo_lembrete.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione o tipo de lembrete:", "Todo dia", "Semanal", "Personalizado" }));
         box_tipo_lembrete.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 box_tipo_lembreteItemStateChanged(evt);
@@ -381,15 +373,6 @@ public class Application extends javax.swing.JFrame
         check_dom.setText("Domingo");
 
         box_dia_semanal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo" }));
-
-        lbl_informe_dia.setText("Informe o dia do mês que deseja ser lembrado:");
-        lbl_informe_dia.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
-
-        txt_dia_mes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_dia_mesActionPerformed(evt);
-            }
-        });
 
         check_sex.setText("Sexta");
 
@@ -462,10 +445,6 @@ public class Application extends javax.swing.JFrame
                                 .addComponent(check_sab)
                                 .addGap(0, 0, 0)
                                 .addComponent(check_dom))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lbl_informe_dia)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txt_dia_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lbl_whatsapp)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(layout.createSequentialGroup()
@@ -519,21 +498,16 @@ public class Application extends javax.swing.JFrame
                     .addComponent(box_tipo_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_quando_lembrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(check_seg)
-                            .addComponent(check_ter)
-                            .addComponent(check_qua)
-                            .addComponent(check_qui)
-                            .addComponent(check_dom)
-                            .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(check_sex)
-                            .addComponent(check_sab))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_informe_dia))
-                    .addComponent(txt_dia_mes, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(check_seg)
+                    .addComponent(check_ter)
+                    .addComponent(check_qua)
+                    .addComponent(check_qui)
+                    .addComponent(check_dom)
+                    .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(check_sex)
+                    .addComponent(check_sab))
                 .addGap(6, 6, 6)
                 .addComponent(lbl_whatsapp)
                 .addGap(0, 0, 0)
@@ -566,9 +540,6 @@ public class Application extends javax.swing.JFrame
     private void txt_tituloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_tituloActionPerformed
     }//GEN-LAST:event_txt_tituloActionPerformed
 
-    private void txt_dia_mesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_dia_mesActionPerformed
-    }//GEN-LAST:event_txt_dia_mesActionPerformed
-
     private void box_tipo_lembreteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_box_tipo_lembreteItemStateChanged
         
         switch (box_tipo_lembrete.getSelectedIndex())
@@ -576,31 +547,18 @@ public class Application extends javax.swing.JFrame
             case 1:
                     lbl_quando_lembrar.setVisible(false);
                     box_dia_semanal.setVisible(false);
-                    lbl_informe_dia.setVisible(false);
-                    txt_dia_mes.setVisible(false);
                     show_semanal_personalizado(false);
                     lbl_quando_lembrar.setVisible(false);
                     break;
             case 2:
                     lbl_quando_lembrar.setVisible(true);
                     box_dia_semanal.setVisible(true);
-                    lbl_informe_dia.setVisible(false);
-                    txt_dia_mes.setVisible(false);
                     show_semanal_personalizado(false);
                     lbl_quando_lembrar.setVisible(true);
                     break;
             case 3:
-                    box_dia_semanal.setVisible(false);
-                    lbl_informe_dia.setVisible(true);
-                    txt_dia_mes.setVisible(true);
-                    show_semanal_personalizado(false);
-                    lbl_quando_lembrar.setVisible(false);
-                    break;
-            case 4:
                     show_semanal_personalizado(true);
                     box_dia_semanal.setVisible(false);
-                    lbl_informe_dia.setVisible(false);
-                    txt_dia_mes.setVisible(false);
                     lbl_quando_lembrar.setVisible(true);
                     break;
         }
@@ -610,27 +568,7 @@ public class Application extends javax.swing.JFrame
     }//GEN-LAST:event_txt_whatsappActionPerformed
 
     private void bt_save_lembreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_save_lembreteActionPerformed
-        
-        boolean valido=true;
-        
-        if(box_tipo_lembrete.getSelectedIndex()==3)
-        {
-            if(txt_dia_mes.getText().equals(""))
-            {
-                JOptionPane.showMessageDialog(null, "Favor informar um dia do mês!");
-                valido=false;
-            }
-            else
-            {
-                int mes = Integer.parseInt(txt_dia_mes.getText());
-                if(mes<1 || mes>31)
-                {
-                    JOptionPane.showMessageDialog(null, "Favor informar um dia válido!");
-                    valido=false;
-                }
-            }
-        }
-        if(valido)       
+  
         criar_lembrete();    }//GEN-LAST:event_bt_save_lembreteActionPerformed
 
     private void bt_showLembretesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_showLembretesActionPerformed
@@ -681,7 +619,6 @@ public class Application extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_dataHorario;
     private javax.swing.JLabel lbl_descricao;
-    private javax.swing.JLabel lbl_informe_dia;
     private javax.swing.JLabel lbl_quando_lembrar;
     private javax.swing.JLabel lbl_tipoLembrete;
     private javax.swing.JLabel lbl_titulo;
@@ -689,7 +626,6 @@ public class Application extends javax.swing.JFrame
     private com.github.lgooddatepicker.components.DatePicker picker_data;
     private com.github.lgooddatepicker.components.TimePicker picker_horario;
     private javax.swing.JTextArea txt_descricao;
-    private javax.swing.JTextField txt_dia_mes;
     private javax.swing.JTextField txt_titulo;
     private javax.swing.JTextField txt_whatsapp;
     // End of variables declaration//GEN-END:variables

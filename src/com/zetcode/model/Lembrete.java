@@ -2,10 +2,9 @@ package com.zetcode.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.TimerTask;
 
-public class Lembrete {
-
+public class Lembrete
+{
     private Long id;
 
     private String titulo;
@@ -23,22 +22,11 @@ public class Lembrete {
     private boolean diario;
     
     private int semanal;
-    
-    private int mensal;
 
     private String semana_personalizado;
 
     private String ativo;
-
-    private TimerTask timer_lembrete;
-    
-    public Lembrete() {
-    }
-
-    public Lembrete(LocalTime horario) {
-        this.horario = horario;
-    }
-    
+        
     public Long getId() {
         return id;
     }
@@ -111,14 +99,6 @@ public class Lembrete {
         this.semanal = semanal;
     }
 
-    public int getMensal() {
-        return mensal;
-    }
-
-    public void setMensal(int mensal) {
-        this.mensal = mensal;
-    }
-
     public boolean isDiario() {
         return diario;
     }
@@ -134,14 +114,4 @@ public class Lembrete {
     public void setAtivo(String ativo) {
         this.ativo = ativo;
     }
-
-    public TimerTask getTimer_lembrete() {
-        return timer_lembrete;
-    }
-
-    public void setTimer_lembrete(TimerTask timer_lembrete) {
-        this.timer_lembrete = timer_lembrete;
-    }
-    
-    
 }
