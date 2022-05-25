@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -39,17 +40,20 @@ public class Application extends javax.swing.JFrame
         lbl_quando_lembrar.setVisible(false);
         box_tipo_envio.setVisible(false);
         ativa_minimizar_aplicacao();
+        start_webDriver();
     }
         
-    @Bean
-    public WebDriver webDriver()
+    private void start_webDriver()
     {
         ChromeOptions options = new ChromeOptions();
-        
-        File f = new File("C:\\MeLembreCache");
-        if (f.isDirectory())
+        options.setBinary("src/com/zetcode/chrome/App/Chrome-bin/chrome.exe");
+        if (new File("C:\\MeLembreCache").isDirectory())
         {
             //options.setHeadless(true);
+            //options.addArguments("--window-size=1920,1080");
+            options.addArguments("--disable-infobars");
+            options.addArguments("--start-maximized");
+            options.addArguments("--disable-extensions");
             options.addArguments("--no-sandbox");
             options.addArguments("--hide-scrollbars");
             options.addArguments("--disable-gpu");
@@ -58,13 +62,21 @@ public class Application extends javax.swing.JFrame
         }
         else
         options.setHeadless(false);
-        
-        options.addArguments("user-data-dir=C:\\MeLembreCache");
+
+        options.addArguments("user-data-dir=C:\\MeLembreCache");    
         options.addArguments("user-agent=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36");
         webDriver = new ChromeDriver(options);
         webDriver.get("https://web.whatsapp.com/");
-        return webDriver;
+        
+        while(webDriver.findElements(By.id("side")).size()<1)
+        {}
+
+        this.setVisible(true);
     }
+    
+    @Bean
+    public WebDriver webDriver()
+    { return webDriver; }
     
     private void criar_lembrete()
     {
@@ -198,12 +210,12 @@ public class Application extends javax.swing.JFrame
      }
     
     private void ativa_minimizar_aplicacao()
-    {
+    {  
         if(SystemTray.isSupported()==true)
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         
         SystemTray systemTray = SystemTray.getSystemTray();
-        TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("icone.png"));
+        TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("src/com/zetcode/util/icone.png"));
         PopupMenu popMenu = new PopupMenu();
         
         MenuItem show = new MenuItem("Mostrar o MeLembre!");
@@ -226,6 +238,7 @@ public class Application extends javax.swing.JFrame
              public void actionPerformed(ActionEvent e)
              { 
                  webDriver.quit();
+                 systemTray.remove(trayIcon);
                  System.exit(0);
              }
           }
@@ -243,11 +256,14 @@ public class Application extends javax.swing.JFrame
     }
      
     private void desminimiza_aplicacao()
-    { this.setVisible(true); }
+    { 
+        if(this.isVisible()==false)
+        this.setVisible(true);
+    }
     
-    private void getProgramacaoAtiva()
+    private static void getProgramacaoAtiva()
     { new LembreteController().getProgramacaoAtiva(); }
-    
+        
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -579,25 +595,22 @@ public class Application extends javax.swing.JFrame
     }//GEN-LAST:event_formWindowGainedFocus
 
     private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        getProgramacaoAtiva();
+//        getProgramacaoAtiva();
     }//GEN-LAST:event_formWindowOpened
 
     private void box_tipo_envioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_box_tipo_envioItemStateChanged
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_box_tipo_envioItemStateChanged
 
     public static void main(String args[])
-    {
-        SpringApplication.run(Application.class, args);
-     
-        java.awt.EventQueue.invokeLater(() -> {
-            new Application().setVisible(true);
-        });
+    { 
+       SpringApplication.run(Application.class, args);
+       getProgramacaoAtiva();
     }     
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> box_dia_semanal;

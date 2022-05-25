@@ -62,17 +62,11 @@ public class LembreteController
     }
     
     public List<Lembrete> findAll()
-    {
-        return lembreteService.findAll();
-    } 
+    { return lembreteService.findAll(); } 
     
     public void deleteLembrete(Lembrete lembrete)
-    {
-        lembreteService.deleteLembrete(lembrete);
-    }
+    { lembreteService.deleteLembrete(lembrete); }
     
     public void getProgramacaoAtiva()
-    {
-        lembreteService.getProgramacaoAtiva();
-    }
+    { lembreteService.getProgramacaoAtiva(); }
 }

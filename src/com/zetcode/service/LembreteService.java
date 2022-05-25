@@ -11,11 +11,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.Keys;
@@ -110,6 +110,8 @@ public class LembreteService
 
             for(Long horariosFinalizados: horarios_finalizados)
             horarios_lembretes.removeIf(hl -> (hl.getId()==horariosFinalizados));
+            
+            this.cancel();
         }
     }
     
@@ -127,12 +129,18 @@ public class LembreteService
        
     private void selenium_call_whatsapp(Lembrete lembrete)
     {              
-        StringSelection stringSelection= new StringSelection(lembrete.getTelefone());
+        StringSelection stringSelection = new StringSelection(lembrete.getTelefone());
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
         
         if(!lembrete.getTelefone().contains("+55"))
-        findContato(lembrete.getTelefone());
+        {  
+            String contato = lembrete.getTelefone();
+            
+            while(contato.length()!=8)
+            { contato = contato.substring(1); }            
+            findContato(lembrete.getTelefone());
+        }
         else
         {
             webDriver.get("https://web.whatsapp.com/send?phone="+lembrete.getTelefone()+"&text=");
@@ -140,9 +148,11 @@ public class LembreteService
             {}
         }
 
+        //System.out.println("Title of the page is -> " + webDriver.getTitle());
+        
         String mensagem = "*"+lembrete.getTitulo()+"*"+"\n\n"+lembrete.getDescricao();
         
-        stringSelection= new StringSelection(mensagem);
+        stringSelection = new StringSelection(mensagem);
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
         
@@ -155,19 +165,27 @@ public class LembreteService
             save(lembrete);
         }
 
-        Calendar segundos_inicio = Calendar.getInstance();
-        segundos_inicio.add(Calendar.SECOND,10);
-
-        while(Calendar.getInstance().compareTo(segundos_inicio)!=0)
-        {}
-        
-        stringSelection = new StringSelection("");
-        clipboard.setContents(stringSelection, null);
+        try
+        { TimeUnit.SECONDS.sleep(10); }
+        catch (InterruptedException ex)
+        {
+        }
+                
+        try
+        {
+            stringSelection = new StringSelection("");
+            clipboard.setContents(stringSelection, null);
+        }
+        catch(Exception e)
+        {
+            stringSelection = new StringSelection("");
+            clipboard.setContents(stringSelection, null);
+        }
     }
     
     private void findContato(String nomeContato)
     {
-        String xPathContato = "//*[@id=\"side\"]/div[1]/div/label/div/div[2]";
+        String xPathContato = "//*[@id=\"side\"]/div[1]/div/div/div[2]/div/div[2]";
         List <WebElement> elemento = webDriver.findElements(By.xpath(xPathContato));
         
         while(elemento.size()<1)
@@ -242,6 +260,7 @@ public class LembreteService
                 {
                     lembretes.set(i, lembrete);
                     found = true;
+                    break;
                 }
             }
 
