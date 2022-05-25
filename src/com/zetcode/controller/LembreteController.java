@@ -69,4 +69,10 @@ public class LembreteController
     
     public void getProgramacaoAtiva()
     { lembreteService.getProgramacaoAtiva(); }
+    
+    public void startWebDriver()
+    { lembreteService.startWebDriver(); }
+    
+    public void quitWebDriver()
+    { lembreteService.quitWebDriver(); }
 }

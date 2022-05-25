@@ -1,12 +1,12 @@
 package com.zetcode.service;
 
 import com.zetcode.model.Lembrete;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.zetcode.repository.LembreteRepository;
 import com.zetcode.util.Dia_Semana_Mes;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -19,7 +19,10 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,7 +30,6 @@ public class LembreteService
 {
     private LembreteRepository lembreteRepository = new LembreteRepository();;
     
-    @Autowired
     private WebDriver webDriver;
 
     public List<Lembrete> lembretes;
@@ -41,6 +43,33 @@ public class LembreteService
         for(Lembrete lembrete: lembretes)
         verificaLembreteHoje(lembrete);   
     }
+    
+    public void startWebDriver()
+    {
+        ChromeOptions options = new ChromeOptions();
+        
+        options.setBinary("src/com/zetcode/chrome/App/Chrome-bin/chrome.exe");        
+        options.addArguments("--disable-infobars");
+        options.addArguments("--disable-extensions");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--hide-scrollbars");
+        options.addArguments("--log-level=3");
+        options.addArguments("--mute-audio");
+        options.addArguments("user-data-dir=C:\\MeLembreCache");
+        
+        webDriver = new ChromeDriver(options);
+        
+        if(new File("C:\\MeLembreCache").isDirectory())
+        webDriver.manage().window().setPosition(new Point(-2000, 0));
+       
+        webDriver.get("https://web.whatsapp.com/");
+        
+        while(webDriver.findElements(By.id("side")).size()<1)
+        {}
+    }
+    
+    public void quitWebDriver()
+    { webDriver.quit(); }
     
     private void verificaLembreteHoje(Lembrete lembrete)
     {                        
@@ -133,6 +162,11 @@ public class LembreteService
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
         
+        try
+        { webDriver.getTitle(); }
+        catch(Exception e)
+        { startWebDriver(); }
+        
         if(!lembrete.getTelefone().contains("+55"))
         {  
             String contato = lembrete.getTelefone();
@@ -147,8 +181,6 @@ public class LembreteService
             while(webDriver.findElements(By.id("side")).size()<1)
             {}
         }
-
-        //System.out.println("Title of the page is -> " + webDriver.getTitle());
         
         String mensagem = "*"+lembrete.getTitulo()+"*"+"\n\n"+lembrete.getDescricao();
         
@@ -190,6 +222,7 @@ public class LembreteService
         
         while(elemento.size()<1)
         {
+            System.out.println("Title of the page is -> " + webDriver.getTitle());
             try
             { elemento = webDriver.findElements(By.xpath(xPathContato)); }
             catch(Exception e)

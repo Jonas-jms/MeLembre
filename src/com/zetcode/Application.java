@@ -10,22 +10,16 @@ import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application extends javax.swing.JFrame
 {   
-    String dias = "";
-    WebDriver webDriver;
+    private String dias = "";
+    private static LembreteController controller;
     
     public Application()
     { 
@@ -40,44 +34,9 @@ public class Application extends javax.swing.JFrame
         lbl_quando_lembrar.setVisible(false);
         box_tipo_envio.setVisible(false);
         ativa_minimizar_aplicacao();
-        start_webDriver();
-    }
-        
-    private void start_webDriver()
-    {
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary("src/com/zetcode/chrome/App/Chrome-bin/chrome.exe");
-        if (new File("C:\\MeLembreCache").isDirectory())
-        {
-            //options.setHeadless(true);
-            //options.addArguments("--window-size=1920,1080");
-            options.addArguments("--disable-infobars");
-            options.addArguments("--start-maximized");
-            options.addArguments("--disable-extensions");
-            options.addArguments("--no-sandbox");
-            options.addArguments("--hide-scrollbars");
-            options.addArguments("--disable-gpu");
-            options.addArguments("--log-level=3");
-            options.addArguments("--mute-audio");
-        }
-        else
-        options.setHeadless(false);
-
-        options.addArguments("user-data-dir=C:\\MeLembreCache");    
-        options.addArguments("user-agent=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36");
-        webDriver = new ChromeDriver(options);
-        webDriver.get("https://web.whatsapp.com/");
-        
-        while(webDriver.findElements(By.id("side")).size()<1)
-        {}
-
         this.setVisible(true);
     }
-    
-    @Bean
-    public WebDriver webDriver()
-    { return webDriver; }
-    
+            
     private void criar_lembrete()
     {
        boolean personalizado_valido = true;
@@ -129,8 +88,6 @@ public class Application extends javax.swing.JFrame
        if(personalizado_valido)
        {
             novo_lembrete.setAtivo("Ativo");
-            
-            LembreteController controller = new LembreteController();
 
             if(controller.save(novo_lembrete)!=false)
             {
@@ -237,7 +194,7 @@ public class Application extends javax.swing.JFrame
              @Override
              public void actionPerformed(ActionEvent e)
              { 
-                 webDriver.quit();
+                 new LembreteController().quitWebDriver();
                  systemTray.remove(trayIcon);
                  System.exit(0);
              }
@@ -261,9 +218,6 @@ public class Application extends javax.swing.JFrame
         this.setVisible(true);
     }
     
-    private static void getProgramacaoAtiva()
-    { new LembreteController().getProgramacaoAtiva(); }
-        
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -599,7 +553,6 @@ public class Application extends javax.swing.JFrame
     }//GEN-LAST:event_formWindowActivated
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-//        getProgramacaoAtiva();
     }//GEN-LAST:event_formWindowOpened
 
     private void box_tipo_envioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_box_tipo_envioItemStateChanged
@@ -609,7 +562,9 @@ public class Application extends javax.swing.JFrame
     public static void main(String args[])
     { 
        SpringApplication.run(Application.class, args);
-       getProgramacaoAtiva();
+       controller = new LembreteController();
+       controller.getProgramacaoAtiva();
+       controller.startWebDriver();
     }     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
