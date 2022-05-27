@@ -46,8 +46,9 @@ public class LembreteService
     
     public void startWebDriver()
     {
-        ChromeOptions options = new ChromeOptions();
+        System.setProperty("webdriver.chrome.driver","src/com/zetcode/chrome/chromedriver.exe");
         
+        ChromeOptions options = new ChromeOptions();       
         options.setBinary("src/com/zetcode/chrome/App/Chrome-bin/chrome.exe");        
         options.addArguments("--disable-infobars");
         options.addArguments("--disable-extensions");
@@ -274,7 +275,7 @@ public class LembreteService
         {
             Long id = lembreteRepository.save(lembrete);
             
-            if(id!=null)
+            if(id!=0)
             {
                 lembrete.setId(id);
                 sucesso = true;

@@ -2,6 +2,7 @@ package com.zetcode.view;
 
 import com.zetcode.controller.LembreteController;
 import com.zetcode.model.Lembrete;
+import java.awt.Color;
 import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -13,6 +14,7 @@ public class Show_Lembretes extends javax.swing.JFrame
     public Show_Lembretes()
     {
         initComponents();
+        this.getContentPane().setBackground(Color.decode("#00AD7C"));
         this.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE); 
         popula_tabela();
     }
@@ -33,9 +35,11 @@ public class Show_Lembretes extends javax.swing.JFrame
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Roboto", 0, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Estes são seus lembretes criados!");
 
+        tbl_lembretes.setFont(new java.awt.Font("Roboto", 0, 11)); // NOI18N
         tbl_lembretes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -47,6 +51,8 @@ public class Show_Lembretes extends javax.swing.JFrame
 
             }
         ));
+        tbl_lembretes.setGridColor(new java.awt.Color(0, 173, 124));
+        tbl_lembretes.setOpaque(false);
         tbl_lembretes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbl_lembretesMouseClicked(evt);
@@ -54,8 +60,9 @@ public class Show_Lembretes extends javax.swing.JFrame
         });
         jScrollPane1.setViewportView(tbl_lembretes);
 
-        jLabel2.setFont(new java.awt.Font("Helvetica", 0, 14)); // NOI18N
-        jLabel2.setText("Selecione na tabela com dois cliques caso queira editar ou apagar um lembrete");
+        jLabel2.setText("Selecione na tabela com um cliques caso queira editar ou apagar um lembrete");
+        jLabel2.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -69,7 +76,7 @@ public class Show_Lembretes extends javax.swing.JFrame
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
-                        .addGap(0, 347, Short.MAX_VALUE)))
+                        .addGap(0, 373, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -80,7 +87,7 @@ public class Show_Lembretes extends javax.swing.JFrame
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

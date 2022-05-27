@@ -3,6 +3,7 @@ import com.zetcode.controller.LembreteController;
 import com.zetcode.model.Lembrete;
 import com.zetcode.view.Show_Lembretes;
 import java.awt.AWTException;
+import java.awt.Color;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -11,7 +12,9 @@ import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -23,9 +26,14 @@ public class Application extends javax.swing.JFrame
     
     public Application()
     { 
+        try
+        { UIManager.setLookAndFeel( new MetalLookAndFeel()); }
+        catch( Exception ex )
+        { JOptionPane.showMessageDialog(null,"Não foi possível inicializar a Interface Gráfica Tatto" ); }
+        
         initComponents();
-        show_lembrete_unico(false);
         show_lembrete_recorrente(false);
+        show_lembrete_unico(true);
         bt_save_lembrete.setVisible(false);
         box_dia_semanal.setVisible(false);
         show_semanal_personalizado(false);
@@ -34,6 +42,7 @@ public class Application extends javax.swing.JFrame
         lbl_quando_lembrar.setVisible(false);
         box_tipo_envio.setVisible(false);
         ativa_minimizar_aplicacao();
+        this.getContentPane().setBackground(Color.decode("#00AD7C"));
         this.setVisible(true);
     }
             
@@ -43,7 +52,7 @@ public class Application extends javax.swing.JFrame
        
        Lembrete novo_lembrete = new Lembrete();
 
-       if(box_tipo_envio.getSelectedIndex()==1)
+       if(box_tipo_envio.getSelectedIndex()==2)
        novo_lembrete.setTelefone("+55"+txt_whatsapp.getText());
        else
        novo_lembrete.setTelefone(txt_whatsapp.getText());   
@@ -53,16 +62,16 @@ public class Application extends javax.swing.JFrame
        novo_lembrete.setHorario(picker_horario.getTime());
        novo_lembrete.setData(picker_data.getDate());  
        
-       if(box_tipo_lembrete.getSelectedIndex()==0)
+       if(box_tipo_lembrete.getSelectedIndex()==1)
        novo_lembrete.setTipo_lembrete("Único");
        else
        novo_lembrete.setTipo_lembrete(box_tipo_lembrete.getSelectedItem().toString());
        
-       if(box_tipo_lembrete.getSelectedIndex()==1)
+       if(box_tipo_lembrete.getSelectedIndex()==2)
        novo_lembrete.setDiario(true);
-       else if(box_tipo_lembrete.getSelectedIndex()==2)
-       novo_lembrete.setSemanal(box_dia_semanal.getSelectedIndex()+1);
        else if(box_tipo_lembrete.getSelectedIndex()==3)
+       novo_lembrete.setSemanal(box_dia_semanal.getSelectedIndex()+1);
+       else if(box_tipo_lembrete.getSelectedIndex()==4)
        {           
            if(check_seg.isSelected())
            dias+="1,";
@@ -128,7 +137,6 @@ public class Application extends javax.swing.JFrame
         txt_descricao.setVisible(hide);
         lbl_dataHorario.setVisible(hide);
         picker_horario.setVisible(hide);
-        picker_data.setVisible(hide);
         lbl_whatsapp.setVisible(hide);
         txt_whatsapp.setVisible(hide);
      }
@@ -142,12 +150,11 @@ public class Application extends javax.swing.JFrame
         txt_descricao.setVisible(hide);
         lbl_dataHorario.setVisible(hide);
         picker_horario.setVisible(hide);
-        lbl_tipoLembrete.setVisible(hide);
-        box_tipo_lembrete.setVisible(hide);
         lbl_whatsapp.setVisible(hide);
         txt_whatsapp.setVisible(hide);
         lbl_quando_lembrar.setVisible(hide);
         box_dia_semanal.setVisible(hide);
+        picker_data.setVisible(hide);
      }
     
     private void limpar_campos()
@@ -194,7 +201,7 @@ public class Application extends javax.swing.JFrame
              @Override
              public void actionPerformed(ActionEvent e)
              { 
-                 new LembreteController().quitWebDriver();
+                 controller.quitWebDriver();
                  systemTray.remove(trayIcon);
                  System.exit(0);
              }
@@ -224,14 +231,11 @@ public class Application extends javax.swing.JFrame
 
         calendarPanel1 = new com.github.lgooddatepicker.components.CalendarPanel();
         jLabel1 = new javax.swing.JLabel();
-        bt_lembreteUnico = new javax.swing.JButton();
-        bt_lembreteRecorrente = new javax.swing.JButton();
         lbl_titulo = new javax.swing.JLabel();
         txt_titulo = new javax.swing.JTextField();
         lbl_descricao = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txt_descricao = new javax.swing.JTextArea();
-        bt_showLembretes = new javax.swing.JButton();
         picker_horario = new com.github.lgooddatepicker.components.TimePicker();
         picker_data = new com.github.lgooddatepicker.components.DatePicker();
         lbl_dataHorario = new javax.swing.JLabel();
@@ -250,8 +254,10 @@ public class Application extends javax.swing.JFrame
         txt_whatsapp = new javax.swing.JTextField();
         bt_save_lembrete = new javax.swing.JButton();
         box_tipo_envio = new javax.swing.JComboBox<>();
+        bt_showLembretes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -269,30 +275,12 @@ public class Application extends javax.swing.JFrame
         });
 
         jLabel1.setText("Me Lembre!");
-        jLabel1.setFont(new java.awt.Font("Helvetica", 0, 48)); // NOI18N
-
-        bt_lembreteUnico.setText("Criar lembrete único");
-        bt_lembreteUnico.setFocusPainted(false);
-        bt_lembreteUnico.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
-        bt_lembreteUnico.setMaximumSize(new java.awt.Dimension(310, 33));
-        bt_lembreteUnico.setMinimumSize(new java.awt.Dimension(310, 33));
-        bt_lembreteUnico.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_lembreteUnicoActionPerformed(evt);
-            }
-        });
-
-        bt_lembreteRecorrente.setText("Criar lembrete recorrente");
-        bt_lembreteRecorrente.setFocusPainted(false);
-        bt_lembreteRecorrente.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
-        bt_lembreteRecorrente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_lembreteRecorrenteActionPerformed(evt);
-            }
-        });
+        jLabel1.setFont(new java.awt.Font("Roboto", 1, 48)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
 
         lbl_titulo.setText("Título:");
-        lbl_titulo.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
+        lbl_titulo.setFont(new java.awt.Font("Roboto", 0, 22)); // NOI18N
+        lbl_titulo.setForeground(new java.awt.Color(255, 255, 255));
 
         txt_titulo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -301,28 +289,29 @@ public class Application extends javax.swing.JFrame
         });
 
         lbl_descricao.setText("Mensagem:");
-        lbl_descricao.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
+        lbl_descricao.setFont(new java.awt.Font("Roboto", 0, 22)); // NOI18N
+        lbl_descricao.setForeground(new java.awt.Color(255, 255, 255));
 
         txt_descricao.setColumns(20);
         txt_descricao.setRows(5);
         jScrollPane1.setViewportView(txt_descricao);
 
-        bt_showLembretes.setText("Visualizar meus lembretes");
-        bt_showLembretes.setFocusPainted(false);
-        bt_showLembretes.setFont(new java.awt.Font("Helvetica", 0, 24)); // NOI18N
-        bt_showLembretes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_showLembretesActionPerformed(evt);
-            }
-        });
+        picker_horario.setFont(new java.awt.Font("Roboto", 0, 11)); // NOI18N
 
-        lbl_dataHorario.setText("Horário/Data");
-        lbl_dataHorario.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
+        picker_data.setFont(new java.awt.Font("Roboto", 0, 11)); // NOI18N
+        picker_data.setMinimumSize(new java.awt.Dimension(161, 23));
+        picker_data.setPreferredSize(new java.awt.Dimension(161, 23));
+
+        lbl_dataHorario.setText("Horário:");
+        lbl_dataHorario.setFont(new java.awt.Font("Roboto", 0, 22)); // NOI18N
+        lbl_dataHorario.setForeground(new java.awt.Color(255, 255, 255));
 
         lbl_tipoLembrete.setText("Tipo de lembrete:");
-        lbl_tipoLembrete.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
+        lbl_tipoLembrete.setFont(new java.awt.Font("Roboto", 0, 22)); // NOI18N
+        lbl_tipoLembrete.setForeground(new java.awt.Color(255, 255, 255));
 
-        box_tipo_lembrete.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione o tipo de lembrete:", "Todo dia", "Semanal", "Personalizado" }));
+        box_tipo_lembrete.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione o tipo de lembrete:", "Único", "Todo dia", "Semanal", "Personalizado" }));
+        box_tipo_lembrete.setFont(new java.awt.Font("Roboto", 0, 13)); // NOI18N
         box_tipo_lembrete.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 box_tipo_lembreteItemStateChanged(evt);
@@ -330,26 +319,69 @@ public class Application extends javax.swing.JFrame
         });
 
         lbl_quando_lembrar.setText("Quando você deseja ser lembrado?");
-        lbl_quando_lembrar.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
+        lbl_quando_lembrar.setFont(new java.awt.Font("Roboto", 0, 22)); // NOI18N
+        lbl_quando_lembrar.setForeground(new java.awt.Color(255, 255, 255));
 
         check_seg.setText("Segunda");
+        check_seg.setContentAreaFilled(false);
+        check_seg.setFocusPainted(false);
+        check_seg.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        check_seg.setForeground(new java.awt.Color(255, 255, 255));
 
         check_ter.setText("Terça");
+        check_ter.setContentAreaFilled(false);
+        check_ter.setFocusPainted(false);
+        check_ter.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        check_ter.setForeground(new java.awt.Color(255, 255, 255));
 
         check_qua.setText("Quarta");
+        check_qua.setContentAreaFilled(false);
+        check_qua.setFocusPainted(false);
+        check_qua.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        check_qua.setForeground(new java.awt.Color(255, 255, 255));
 
         check_qui.setText("Quinta");
+        check_qui.setContentAreaFilled(false);
+        check_qui.setFocusPainted(false);
+        check_qui.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        check_qui.setForeground(new java.awt.Color(255, 255, 255));
 
         check_dom.setText("Domingo");
+        check_dom.setContentAreaFilled(false);
+        check_dom.setFocusPainted(false);
+        check_dom.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        check_dom.setForeground(new java.awt.Color(255, 255, 255));
+        check_dom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                check_domActionPerformed(evt);
+            }
+        });
 
         box_dia_semanal.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo" }));
+        box_dia_semanal.setFont(new java.awt.Font("Roboto", 0, 13)); // NOI18N
+        box_dia_semanal.setForeground(new java.awt.Color(0, 51, 51));
+        box_dia_semanal.setInheritsPopupMenu(true);
+        box_dia_semanal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                box_dia_semanalActionPerformed(evt);
+            }
+        });
 
         check_sex.setText("Sexta");
+        check_sex.setContentAreaFilled(false);
+        check_sex.setFocusPainted(false);
+        check_sex.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        check_sex.setForeground(new java.awt.Color(255, 255, 255));
 
         check_sab.setText("Sábado");
+        check_sab.setContentAreaFilled(false);
+        check_sab.setFocusPainted(false);
+        check_sab.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        check_sab.setForeground(new java.awt.Color(255, 255, 255));
 
-        lbl_whatsapp.setText("Informe o número do Whatsapp que irá receber o lembrete:");
-        lbl_whatsapp.setFont(new java.awt.Font("Helvetica", 0, 22)); // NOI18N
+        lbl_whatsapp.setText("Informe como será enviado o Lembrete:");
+        lbl_whatsapp.setFont(new java.awt.Font("Roboto", 0, 22)); // NOI18N
+        lbl_whatsapp.setForeground(new java.awt.Color(255, 255, 255));
 
         txt_whatsapp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -357,7 +389,11 @@ public class Application extends javax.swing.JFrame
             }
         });
 
-        bt_save_lembrete.setText("Criar lembrete");
+        bt_save_lembrete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/zetcode/util/icon_CriarLembrete.png"))); // NOI18N
+        bt_save_lembrete.setBorderPainted(false);
+        bt_save_lembrete.setContentAreaFilled(false);
+        bt_save_lembrete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        bt_save_lembrete.setFocusPainted(false);
         bt_save_lembrete.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         bt_save_lembrete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -366,9 +402,22 @@ public class Application extends javax.swing.JFrame
         });
 
         box_tipo_envio.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Para um contato salvo (informe o nome do contato):", "Para um número de telefone (informe o número):" }));
+        box_tipo_envio.setFont(new java.awt.Font("Roboto", 0, 13)); // NOI18N
         box_tipo_envio.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 box_tipo_envioItemStateChanged(evt);
+            }
+        });
+
+        bt_showLembretes.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        bt_showLembretes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/zetcode/util/icon_VisualizarLembrete.png"))); // NOI18N
+        bt_showLembretes.setBorderPainted(false);
+        bt_showLembretes.setContentAreaFilled(false);
+        bt_showLembretes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        bt_showLembretes.setFocusPainted(false);
+        bt_showLembretes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_showLembretesActionPerformed(evt);
             }
         });
 
@@ -376,32 +425,43 @@ public class Application extends javax.swing.JFrame
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(327, 327, 327))
             .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(bt_showLembretes, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(lbl_descricao)
+                                        .addComponent(lbl_dataHorario)
+                                        .addComponent(lbl_titulo))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jScrollPane1)
+                                            .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(lbl_quando_lembrar)
+                                    .addGap(5, 5, 5)
+                                    .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(lbl_whatsapp))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lbl_descricao)
-                                    .addComponent(lbl_dataHorario)
-                                    .addComponent(lbl_titulo))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 691, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lbl_tipoLembrete)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(box_tipo_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lbl_quando_lembrar)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(check_seg)
                                 .addGap(0, 0, 0)
                                 .addComponent(check_ter)
@@ -415,122 +475,123 @@ public class Application extends javax.swing.JFrame
                                 .addComponent(check_sab)
                                 .addGap(0, 0, 0)
                                 .addComponent(check_dom))
-                            .addComponent(lbl_whatsapp)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(bt_save_lembrete, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(282, 282, 282)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(bt_lembreteUnico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(bt_lembreteRecorrente))
+                                .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(153, 153, 153)
-                                .addComponent(jLabel1))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGap(109, 109, 109)
-                                .addComponent(bt_showLembretes)
-                                .addGap(141, 141, 141)))))
+                                .addComponent(lbl_tipoLembrete)
+                                .addGap(5, 5, 5)
+                                .addComponent(box_tipo_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(325, 325, 325)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(22, 22, 22)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(bt_lembreteUnico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bt_lembreteRecorrente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(14, 14, 14)
-                .addComponent(bt_showLembretes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(34, 34, 34)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbl_tipoLembrete)
+                    .addComponent(box_tipo_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_titulo)
                     .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbl_descricao)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(6, 6, 6)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_dataHorario)
-                    .addComponent(picker_horario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_tipoLembrete)
-                    .addComponent(box_tipo_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_quando_lembrar)
-                .addGap(6, 6, 6)
+                    .addComponent(picker_data, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lbl_dataHorario)
+                        .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(10, 10, 10)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbl_quando_lembrar)
+                    .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(check_seg)
                     .addComponent(check_ter)
                     .addComponent(check_qua)
                     .addComponent(check_qui)
                     .addComponent(check_dom)
-                    .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(check_sex)
                     .addComponent(check_sab))
-                .addGap(6, 6, 6)
+                .addGap(7, 7, 7)
                 .addComponent(lbl_whatsapp)
-                .addGap(0, 0, 0)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(bt_save_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bt_showLembretes, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void bt_lembreteUnicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_lembreteUnicoActionPerformed
-        bt_save_lembrete.setVisible(true);
-        show_lembrete_recorrente(false);
-        show_lembrete_unico(true);
-        lbl_dataHorario.setText("Horário/Data");
-    }//GEN-LAST:event_bt_lembreteUnicoActionPerformed
-
-    private void bt_lembreteRecorrenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_lembreteRecorrenteActionPerformed
-        bt_save_lembrete.setVisible(true);
-        show_lembrete_unico(false);
-        show_lembrete_recorrente(true);
-        lbl_dataHorario.setText("Horário");
-    }//GEN-LAST:event_bt_lembreteRecorrenteActionPerformed
 
     private void txt_tituloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_tituloActionPerformed
     }//GEN-LAST:event_txt_tituloActionPerformed
 
     private void box_tipo_lembreteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_box_tipo_lembreteItemStateChanged
         
-        switch (box_tipo_lembrete.getSelectedIndex())
+        if(box_tipo_lembrete.getSelectedIndex()>0)
         {
-            case 1:
-                    lbl_quando_lembrar.setVisible(false);
-                    box_dia_semanal.setVisible(false);
-                    show_semanal_personalizado(false);
-                    lbl_quando_lembrar.setVisible(false);
-                    break;
-            case 2:
-                    lbl_quando_lembrar.setVisible(true);
-                    box_dia_semanal.setVisible(true);
-                    show_semanal_personalizado(false);
-                    lbl_quando_lembrar.setVisible(true);
-                    break;
-            case 3:
-                    show_semanal_personalizado(true);
-                    box_dia_semanal.setVisible(false);
-                    lbl_quando_lembrar.setVisible(true);
-                    break;
+            bt_save_lembrete.setVisible(true);
+            lbl_whatsapp.setVisible(true);
+            box_tipo_envio.setVisible(true);
+            txt_whatsapp.setVisible(true);
+            
+            if(box_tipo_lembrete.getSelectedIndex()==1)
+            {
+                lbl_dataHorario.setText("Horário/Data:");
+                picker_data.setVisible(true);
+            }
+            else
+            {
+                lbl_dataHorario.setText("Horário:");
+                picker_data.setVisible(false);
+            }
+                        
+            if(box_tipo_lembrete.getSelectedIndex()==3 || box_tipo_lembrete.getSelectedIndex()==4)
+            {
+                lbl_quando_lembrar.setVisible(true);
+                
+                if(box_tipo_lembrete.getSelectedIndex()==3)
+                box_dia_semanal.setVisible(true);
+                else
+                box_dia_semanal.setVisible(false);
+                
+                if(box_tipo_lembrete.getSelectedIndex()==4)
+                show_semanal_personalizado(true);
+                else
+                show_semanal_personalizado(false);      
+            }
+            else
+            {
+                lbl_quando_lembrar.setVisible(false);
+                box_dia_semanal.setVisible(false);
+                show_semanal_personalizado(false);      
+            }
+        }
+        else
+        {
+            show_lembrete_recorrente(false);
+            show_lembrete_unico(true);
+            bt_save_lembrete.setVisible(false);
+            lbl_dataHorario.setText("Horário:");
+            show_semanal_personalizado(false);      
+            lbl_whatsapp.setVisible(false);
+            box_tipo_envio.setVisible(false);
+            txt_whatsapp.setVisible(false);
+            show_semanal_personalizado(false);     
         }
     }//GEN-LAST:event_box_tipo_lembreteItemStateChanged
 
@@ -540,10 +601,6 @@ public class Application extends javax.swing.JFrame
     private void bt_save_lembreteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_save_lembreteActionPerformed
   
         criar_lembrete();    }//GEN-LAST:event_bt_save_lembreteActionPerformed
-
-    private void bt_showLembretesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_showLembretesActionPerformed
-        new Show_Lembretes().setVisible(true);
-    }//GEN-LAST:event_bt_showLembretesActionPerformed
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
     }//GEN-LAST:event_formWindowGainedFocus
@@ -559,6 +616,18 @@ public class Application extends javax.swing.JFrame
 
     }//GEN-LAST:event_box_tipo_envioItemStateChanged
 
+    private void check_domActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check_domActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_check_domActionPerformed
+
+    private void box_dia_semanalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_box_dia_semanalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_box_dia_semanalActionPerformed
+
+    private void bt_showLembretesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_showLembretesActionPerformed
+       new Show_Lembretes().setVisible(true);
+    }//GEN-LAST:event_bt_showLembretesActionPerformed
+
     public static void main(String args[])
     { 
        SpringApplication.run(Application.class, args);
@@ -571,8 +640,6 @@ public class Application extends javax.swing.JFrame
     private javax.swing.JComboBox<String> box_dia_semanal;
     private javax.swing.JComboBox<String> box_tipo_envio;
     private javax.swing.JComboBox<String> box_tipo_lembrete;
-    private javax.swing.JButton bt_lembreteRecorrente;
-    private javax.swing.JButton bt_lembreteUnico;
     private javax.swing.JButton bt_save_lembrete;
     private javax.swing.JButton bt_showLembretes;
     private com.github.lgooddatepicker.components.CalendarPanel calendarPanel1;
