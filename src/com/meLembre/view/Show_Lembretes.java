@@ -1,7 +1,7 @@
-package com.zetcode.view;
+package com.meLembre.view;
 
-import com.zetcode.controller.LembreteController;
-import com.zetcode.model.Lembrete;
+import com.meLembre.controller.LembreteController;
+import com.meLembre.model.Lembrete;
 import java.awt.Color;
 import java.util.List;
 import javax.swing.JTable;

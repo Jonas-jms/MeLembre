@@ -1,4 +1,4 @@
-package com.zetcode.model;
+package com.meLembre.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,9 +1,9 @@
-package com.zetcode.controller;
+package com.meLembre.controller;
 
-import com.zetcode.util.TSUtil;
-import com.zetcode.model.Lembrete;
-import com.zetcode.service.LembreteService;
-import com.zetcode.util.BeanProvider;
+import com.meLembre.util.TSUtil;
+import com.meLembre.model.Lembrete;
+import com.meLembre.service.LembreteService;
+import com.meLembre.util.BeanProvider;
 import java.util.List;
 import javax.swing.JOptionPane;
 import org.springframework.beans.factory.annotation.Autowired;

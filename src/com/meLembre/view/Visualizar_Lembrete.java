@@ -1,6 +1,6 @@
-package com.zetcode.view;
-import com.zetcode.controller.LembreteController;
-import com.zetcode.model.Lembrete;
+package com.meLembre.view;
+import com.meLembre.controller.LembreteController;
+import com.meLembre.model.Lembrete;
 import java.awt.Color;
 import java.awt.Image;
 import java.io.IOException;
@@ -654,7 +654,7 @@ public class Visualizar_Lembrete extends javax.swing.JFrame
     public static void main(String args[])
     {     
         java.awt.EventQueue.invokeLater(() -> {
-            new Visualizar_Lembrete_old(null).setVisible(true);
+            new Visualizar_Lembrete(null).setVisible(true);
         });
     }
       

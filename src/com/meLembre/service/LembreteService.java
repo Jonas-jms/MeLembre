@@ -1,8 +1,8 @@
-package com.zetcode.service;
+package com.meLembre.service;
 
-import com.zetcode.model.Lembrete;
-import com.zetcode.repository.LembreteRepository;
-import com.zetcode.util.Dia_Semana_Mes;
+import com.meLembre.model.Lembrete;
+import com.meLembre.repository.LembreteRepository;
+import com.meLembre.util.Dia_Semana_Mes;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -46,10 +46,10 @@ public class LembreteService
     
     public void startWebDriver()
     {
-        System.setProperty("webdriver.chrome.driver","src/com/zetcode/chrome/chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver","src/com/meLembre/chrome/chromedriver.exe");
         
         ChromeOptions options = new ChromeOptions();       
-        options.setBinary("src/com/zetcode/chrome/App/Chrome-bin/chrome.exe");        
+        options.setBinary("src/com/meLembre/chrome/App/Chrome-bin/chrome.exe");        
         options.addArguments("--disable-infobars");
         options.addArguments("--disable-extensions");
         options.addArguments("--no-sandbox");

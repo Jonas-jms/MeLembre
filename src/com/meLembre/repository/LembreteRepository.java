@@ -1,10 +1,10 @@
-package com.zetcode.repository;
+package com.meLembre.repository;
 
-import com.zetcode.model.Lembrete;
+import com.meLembre.model.Lembrete;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
-import com.zetcode.util.Conexao_Banco;
+import com.meLembre.util.Conexao_Banco;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class LembreteRepository
         
         try
         {
-            conexao = Conexao_Banco.conector();
+            conexao = Conexao_Banco.conectorSQLITE();
             pst = conexao.prepareStatement("SELECT * FROM LEMBRETE");
             rs = pst.executeQuery();
 
@@ -68,7 +68,7 @@ public class LembreteRepository
     {
         try
         {
-            conexao = Conexao_Banco.conector();
+            conexao = Conexao_Banco.conectorSQLITE();
             pst=conexao.prepareStatement("DELETE FROM LEMBRETE WHERE ID=?");
             pst.setLong(1, id);
             pst.executeUpdate();
@@ -93,7 +93,7 @@ public class LembreteRepository
         String sql="INSERT INTO LEMBRETE(ativo, data,descricao, diario, horario, semana_personalizado, semanal, telefone, tipo_lembrete, titulo) VALUES (?,?,?,?,?,?,?,?,?,?)";
         try
         {
-            conexao = Conexao_Banco.conector();
+            conexao = Conexao_Banco.conectorSQLITE();
             pst=conexao.prepareStatement(sql);
             pst.setString(1, lembrete.getAtivo());
             
@@ -138,7 +138,7 @@ public class LembreteRepository
         boolean sucesso=false;
         try
         {
-            conexao = Conexao_Banco.conector();
+            conexao = Conexao_Banco.conectorSQLITE();
             pst=conexao.prepareStatement("UPDATE LEMBRETE set ativo=?, data=?, descricao=?, diario=?, horario=?, semana_personalizado=?, semanal=?, telefone=?, tipo_lembrete=?, titulo=? where id=?");
             pst.setString(1, lembrete.getAtivo());
             

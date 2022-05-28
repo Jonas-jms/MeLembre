@@ -1,7 +1,8 @@
-package com.zetcode;
-import com.zetcode.controller.LembreteController;
-import com.zetcode.model.Lembrete;
-import com.zetcode.view.Show_Lembretes;
+package com.meLembre;
+import com.meLembre.controller.LembreteController;
+import com.meLembre.model.Lembrete;
+import com.meLembre.util.AuthorizationService;
+import com.meLembre.view.Show_Lembretes;
 import java.awt.AWTException;
 import java.awt.Color;
 import java.awt.MenuItem;
@@ -179,7 +180,7 @@ public class Application extends javax.swing.JFrame
         this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
         
         SystemTray systemTray = SystemTray.getSystemTray();
-        TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("src/com/zetcode/util/icone.png"));
+        TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage("src/com/meLembre/util/icone.png"));
         PopupMenu popMenu = new PopupMenu();
         
         MenuItem show = new MenuItem("Mostrar o MeLembre!");
@@ -389,7 +390,7 @@ public class Application extends javax.swing.JFrame
             }
         });
 
-        bt_save_lembrete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/zetcode/util/icon_CriarLembrete.png"))); // NOI18N
+        bt_save_lembrete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/meLembre/util/icon_CriarLembrete.png"))); // NOI18N
         bt_save_lembrete.setBorderPainted(false);
         bt_save_lembrete.setContentAreaFilled(false);
         bt_save_lembrete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
@@ -409,12 +410,12 @@ public class Application extends javax.swing.JFrame
             }
         });
 
-        bt_showLembretes.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        bt_showLembretes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/zetcode/util/icon_VisualizarLembrete.png"))); // NOI18N
+        bt_showLembretes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/meLembre/util/icon_VisualizarLembrete.png"))); // NOI18N
         bt_showLembretes.setBorderPainted(false);
         bt_showLembretes.setContentAreaFilled(false);
         bt_showLembretes.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         bt_showLembretes.setFocusPainted(false);
+        bt_showLembretes.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         bt_showLembretes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_showLembretesActionPerformed(evt);
@@ -439,51 +440,45 @@ public class Application extends javax.swing.JFrame
                             .addComponent(bt_showLembretes, javax.swing.GroupLayout.PREFERRED_SIZE, 448, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lbl_descricao)
+                                .addComponent(lbl_dataHorario)
+                                .addComponent(lbl_titulo))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane1)
+                                    .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(lbl_descricao)
-                                        .addComponent(lbl_dataHorario)
-                                        .addComponent(lbl_titulo))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jScrollPane1)
-                                            .addComponent(txt_titulo, javax.swing.GroupLayout.PREFERRED_SIZE, 535, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(lbl_quando_lembrar)
-                                    .addGap(5, 5, 5)
-                                    .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(lbl_whatsapp))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                    .addComponent(picker_horario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(picker_data, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(lbl_quando_lembrar)
+                            .addGap(5, 5, 5)
+                            .addComponent(box_dia_semanal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lbl_whatsapp))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(check_seg)
-                                .addGap(0, 0, 0)
-                                .addComponent(check_ter)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(check_qua)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(check_qui)
-                                .addGap(0, 0, 0)
-                                .addComponent(check_sex)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(check_sab)
-                                .addGap(0, 0, 0)
-                                .addComponent(check_dom))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lbl_tipoLembrete)
-                                .addGap(5, 5, 5)
-                                .addComponent(box_tipo_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(325, 325, 325)))
+                        .addComponent(check_seg)
+                        .addGap(0, 0, 0)
+                        .addComponent(check_ter)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(check_qua)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(check_qui)
+                        .addGap(0, 0, 0)
+                        .addComponent(check_sex)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(check_sab)
+                        .addGap(0, 0, 0)
+                        .addComponent(check_dom))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(box_tipo_envio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_whatsapp, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lbl_tipoLembrete)
+                        .addGap(5, 5, 5)
+                        .addComponent(box_tipo_lembrete, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -617,11 +612,11 @@ public class Application extends javax.swing.JFrame
     }//GEN-LAST:event_box_tipo_envioItemStateChanged
 
     private void check_domActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_check_domActionPerformed
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_check_domActionPerformed
 
     private void box_dia_semanalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_box_dia_semanalActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_box_dia_semanalActionPerformed
 
     private void bt_showLembretesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_showLembretesActionPerformed
@@ -630,10 +625,34 @@ public class Application extends javax.swing.JFrame
 
     public static void main(String args[])
     { 
-       SpringApplication.run(Application.class, args);
-       controller = new LembreteController();
-       controller.getProgramacaoAtiva();
-       controller.startWebDriver();
+       boolean start = false;
+               
+       AuthorizationService authorization = new AuthorizationService();
+
+       int found = authorization.findUser(System.getProperty("user.name"));
+       
+       if(found==-1)
+       {
+          if(authorization.createUser(System.getProperty("user.name")))
+          start = true;
+       }
+       else if(found==1)
+       start = true;
+       
+       authorization.closeConnection();
+       
+       if(start)
+       {
+           SpringApplication.run(Application.class, args);
+           controller = new LembreteController();
+           controller.getProgramacaoAtiva();
+           controller.startWebDriver();
+       }
+       else
+       {
+           JOptionPane.showMessageDialog(null, "Infelizmente o período de testes do MeLembre foi encerrado. Contate o criador Jonas Magalhães para readquirir o acesso do programa.\nContato: 71983391878\nE-mail: jonasmagalhaes.8@gmail.com");
+           System.exit(0);
+       }
     }     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
